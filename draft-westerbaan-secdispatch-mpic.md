@@ -9,19 +9,19 @@ number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: "Security"
+workgroup: "Security Dispatch"
 keyword:
  - next generation
  - unicorn
  - sparkling distributed ledger
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: "Security Dispatch"
+  type: "Working Group"
+  mail: "secdispatch@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/secdispatch/"
+  github: "bwesterb/draft-mpic"
+  latest: "https://bwesterb.github.io/draft-mpic/draft-westerbaan-secdispatch-mpic.html"
 
 author:
  -
