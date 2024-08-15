@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-13T01:16:49.338926+00:00",
+  "timestamp": "2024-08-15T01:11:58.009205+00:00",
   "repo": "bwesterb/draft-mpic",
   "labels": [
     {
@@ -49,6 +49,119 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOMYks0s6TACJZ",
+      "title": "Move to organisation",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/1",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Shall we move this repo to an organisation?",
+      "createdAt": "2024-08-14T16:09:14Z",
+      "updatedAt": "2024-08-14T16:09:14Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOMYks0s6TAY_-",
+      "title": "Sort out authentication",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/2",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Probably best to make optional and suggest `Authorization` header for token.",
+      "createdAt": "2024-08-14T17:00:26Z",
+      "updatedAt": "2024-08-14T17:00:26Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOMYks0s6TAZp3",
+      "title": "Make quorum deterministic?",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/3",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "We do not want retries to help the attacker.",
+      "createdAt": "2024-08-14T17:01:58Z",
+      "updatedAt": "2024-08-14T17:01:58Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOMYks0s6TAZ7h",
+      "title": "Cyclic dependency in trust",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/4",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Should the CA trust the WebPKI to authenticate the MPIC service?",
+      "createdAt": "2024-08-14T17:02:41Z",
+      "updatedAt": "2024-08-14T17:02:41Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOMYks0s6TAaNj",
+      "title": "Validations methods besides http, dns, and caa",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/5",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Do we want to add alpn?",
+      "createdAt": "2024-08-14T17:03:27Z",
+      "updatedAt": "2024-08-14T17:03:27Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOMYks0s6TAaYE",
+      "title": "Sign responses",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/6",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Do we want the MPIC service to sign its responses as evidence.",
+      "createdAt": "2024-08-14T17:03:51Z",
+      "updatedAt": "2024-08-14T17:03:51Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOMYks0s6TAbNg",
+      "title": "How much levers to give the CA in the strictness of validation",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/7",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Should we allow the client to specify the details of the quorum? Eg. min 2 out of 10. Or just a policy? Eg. CA/B 2026. Or leave it completely to the service.",
+      "createdAt": "2024-08-14T17:05:28Z",
+      "updatedAt": "2024-08-14T17:05:29Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": []
 }
