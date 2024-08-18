@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-15T01:11:58.009205+00:00",
+  "timestamp": "2024-08-18T01:19:44.783756+00:00",
   "repo": "bwesterb/draft-mpic",
   "labels": [
     {
@@ -62,9 +62,17 @@
       "labels": [],
       "body": "Shall we move this repo to an organisation?",
       "createdAt": "2024-08-14T16:09:14Z",
-      "updatedAt": "2024-08-14T16:09:14Z",
+      "updatedAt": "2024-08-17T01:14:58Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I would say we probably should, but I don't have any recommendations myself apart from a community-oriented org like open-mpic or something major like pkic.",
+          "createdAt": "2024-08-17T01:14:57Z",
+          "updatedAt": "2024-08-17T01:14:57Z"
+        }
+      ]
     },
     {
       "number": 2,
@@ -94,9 +102,17 @@
       "labels": [],
       "body": "We do not want retries to help the attacker.",
       "createdAt": "2024-08-14T17:01:58Z",
-      "updatedAt": "2024-08-14T17:01:58Z",
+      "updatedAt": "2024-08-17T01:18:43Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There's a retry logic proposal I have written up on the open-mpic-specification here: https://github.com/open-mpic/open-mpic-specification/issues/3\r\nAgreed that some level of determinism is good so that retries _can_ (to a degree) be useful for the issuer but not for an adversary.",
+          "createdAt": "2024-08-17T01:18:43Z",
+          "updatedAt": "2024-08-17T01:18:43Z"
+        }
+      ]
     },
     {
       "number": 4,
@@ -126,9 +142,17 @@
       "labels": [],
       "body": "Do we want to add alpn?",
       "createdAt": "2024-08-14T17:03:27Z",
-      "updatedAt": "2024-08-14T17:03:27Z",
+      "updatedAt": "2024-08-17T02:42:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Right now the open-mpic API is specified to support http, dns, alpn, and caa.\r\nIs there a reason to hold off on supporting that with v1? If not then we can forge ahead with it.",
+          "createdAt": "2024-08-17T02:42:25Z",
+          "updatedAt": "2024-08-17T02:42:25Z"
+        }
+      ]
     },
     {
       "number": 6,
@@ -142,9 +166,17 @@
       "labels": [],
       "body": "Do we want the MPIC service to sign its responses as evidence.",
       "createdAt": "2024-08-14T17:03:51Z",
-      "updatedAt": "2024-08-14T17:03:51Z",
+      "updatedAt": "2024-08-17T03:01:34Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Depends on the anticipated client-service relationship(s) it'll support. At the moment I believe the open-mpic spec and implementation effectively assumes that it's to be deployed and maintained by the same organization that is acting as the client (i.e. a CA is using it for its own MPIC), then its effectively a service within that org and signing the responses doesn't add much in the way of trust (I think), especially if there are service logs available and accessible by the organization.\r\n\r\nIf we want the API to be crafted to support a client-service relationship where the API is basically externally facing (and I suppose that's the most practical reason to have a \"standard\" API at all, for there to be multiple externally available MPIC APIs hosted by, e.g., Cloudflare, etc.) then I think it's a valid question as to whether traceability and non-repudiation have a place in this. Perhaps there can be a kind of \"mode\" (configuration) under which the API is expected to be deployed -- externally facing, in which case a whole set of additional specification applies, or internally facing, in which case things are slightly simpler. Just thinking out loud.",
+          "createdAt": "2024-08-17T03:01:32Z",
+          "updatedAt": "2024-08-17T03:01:32Z"
+        }
+      ]
     },
     {
       "number": 7,
@@ -158,9 +190,17 @@
       "labels": [],
       "body": "Should we allow the client to specify the details of the quorum? Eg. min 2 out of 10. Or just a policy? Eg. CA/B 2026. Or leave it completely to the service.",
       "createdAt": "2024-08-14T17:05:28Z",
-      "updatedAt": "2024-08-14T17:05:29Z",
+      "updatedAt": "2024-08-17T03:23:19Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We were just having this conversation earlier today about how \"requirements-aware\" the API should be and to what extent it should enforce them.\r\nThe policy to specify is a really interesting idea.\r\nAs of this moment, the open-mpic API allows for specification of any value for the quorum, with the value of 0 effectively rendering it a logging-only service that interprets all outcomes as passing. I am thinking of proposing a change to that, and have a pull request that's under review which nudges validation logic more towards the requirements-aware side of things.\r\nAt the same time, the quorum count is currently an optional parameter. In its absence, the default can either be fully configurable by whoever owns the services (i.e. set it to something like 5 in a config file) or it can be programmatically derived based on the count of remote perspectives being interrogated (i.e. `perspective_count - 1` or `perspective_count - 2` depending on whether that count is <6 or not.)\r\n\r\nAnyway in the interest of making fast progress on this, here's my current thinking and what I'm considering implementing in the coming days, though I'm 100% OK with changing completely if my reasoning is faulty. \r\n\r\nI propose that quorum count remain an optional parameter to specify to the service, to allow for a higher-than-minimum-allowed-by-the-requirements threshold. If you want a quorum of 100%, that should be possible.\r\n\r\nI also propose that the default quorum is requirements-aware (programmatically derived). The logic used for deriving it can be policy-specific... that's something I hadn't thought of. I don't have a strong opinion on whether that should be how the service applies logic (i.e., it can apply a _non-current policy_) or whether it should just always be updated to reflect the current policy, and versioned accordingly. Perhaps the latter?\r\n\r\nI also propose that the quorum count in the API request (assuming it's a whole number) is allowed to be below the required minimum only if the API is run in a diagnostics/dev mode with value validation (as opposed to request structure validation) disabled. That, or include a warning in the response that the quorum count used is below the required threshold and therefore cannot actually be used to support cert issuance. Not sure if the latter is really a useful use case to support, though.",
+          "createdAt": "2024-08-17T03:23:18Z",
+          "updatedAt": "2024-08-17T03:23:18Z"
+        }
+      ]
     }
   ],
   "pulls": []
