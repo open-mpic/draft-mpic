@@ -76,12 +76,15 @@ of Web PKI infrastructure.
 
 {::boilerplate bcp14-tagged}
 
-# API
+# API Structure
 
-A service is identified by a HTTPS url.
+The MPIC API implements a system for domain validation and CAA record checking
+using multiple perspectives across different regions.
+
+A MPIC service is identified by a HTTPS url.
 As a running example, say `https://mpc.example.com/staging`.
 
-A client requests an MPIC from the service
+A client requests a MPIC validation from the service
 by sending a POST request to the resource `/mpic/draft-00`
 below the service URL.
 In the running example `https://mpc.example.com/staging/mpic/draft-00`.
@@ -89,30 +92,31 @@ In the running example `https://mpc.example.com/staging/mpic/draft-00`.
 [[ The final version of the API will use `/mpic/v1`. Incompatible
    versions of the draft will bump the `-00`. ]]
 
-The body of the POST is a JSON object that described the MPIC request.
-The service will respond with a JSON object.
-There are three different method, described below. The request object has
-a `method` field that distinguishes the method.
+The body of the HTTP POST is a JSON object that describs the MPIC request.
+The service will respond with a JSON object containing MPIC results.
 
-## `caa` method
+There are three different MPIC validation methods, described below. The request
+object has a `method` field that allows to distinguish between each.
 
-A `caa` requests asks the MPIC service to retrieve the relevant CAA DNS
+## `CAA` validation method
+
+A `CAA` requests asks the MPIC service to retrieve the relevant CAA DNS
 records for a given domain from multiple vantage points.
 
-The request object has the following specific fields.
+The request JSON object has the following specific fields.
 
 * `domain` The domain to check the CAA records for.
 
-If successful (described in TODO REF below), the response object
-contains a `ok` field set to `true`, and
-an `caa` field, which itself is an object with two fields:
+If successful (described in TODO REF below), the response object contains a
+`success` field set to `true`, and an `caa` field, which itself is an object
+with two fields:
 
 * `domain` The domain on which the CAA records were found. This could be
   a parent domain of the requested `domain`.
 
 * `records` A list of base64 encoded CAA records.
 
-On failure, the response object will have the `ok` field set to `false`,
+On failure, the response object will have the `success` field set to `false`,
 and an `error` field describing the error.
 
 [[ TODO do we to define the possible errors, or at least assign
@@ -135,7 +139,7 @@ An example of a response for a succesful validation.
 
 ~~~
 {
- "ok": true,
+ "success": true,
  "caa": {
   "domain": "example.com",
   "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
@@ -147,7 +151,7 @@ An example of a response for an unsuccesful validation.
 
 ~~~
 {
- "ok": false,
+ "success": false,
  "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
 }
 ~~~
