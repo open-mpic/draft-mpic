@@ -24,10 +24,13 @@ venue:
 
 author:
  -
+    fullname: "Syed Suleman Ahmad"
+    organization: Cloudflare
+    email: "suleman@cloudflare.com"
+ -
     fullname: "Bas Westerbaan"
     organization: Cloudflare
     email: "bas@cloudflare.com"
-
 normative:
 
 informative:
@@ -35,19 +38,39 @@ informative:
 
 --- abstract
 
-This memo defines an API for a service to offer
-multi-perspective issuance corroboration (MPIC)
-for domain control validation.
-
-TODO CA/B context.
-
+This memo defines an API for a service to offer multi-perspective issuance
+corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
+forum requires MPIC to be performed by all certification authorities (CAs) in
+the Web PKI.
 
 --- middle
 
 # Introduction
 
-TODO References to CA/B
+The Web PKI infrastructure provides the foundation for securing communications
+across the Internet. At the core of this model are certificates, issued by
+Certification Authorities (CAs), which are used to authenticate domain names.
+For certificate issuance, a CA is required to verify that the applicant
+requesting a certificate is in authority of the provided domain. Automatic
+Certificate Management Environment (ACME) protocol [RFC8555] provides a
+simplified and automated certificate issuance mechanism such as placing a
+CA-provided challenge on a web server, or adding a new DNS record for the
+domain. However, this process generally involves a single vantage-point
+validation mechanism which opens door for DNS hijacking, phishing, and other
+types of attack that can allow unauthorized entities to pass validation.
 
+This document introduces Multi-Path Issuance Collaboration (MPIC), a framework
+designed to leverage distributed trust and multiple independent paths for
+certificate issuance validation. Use of MPIC by CAs can ensure that no single
+point of compromise exists in the validation chain, and reduces the risk of
+certificate misissuance. The framework further extends to provide multi-path
+CAA record validation to help ensure that CAs are authorized to issue a
+certificate for the domain.
+
+Notably, the CA/B Forum Ballot SC-67 v3 requires all CAs to perform MPIC for
+certificate issuance. This industry-wide mandate underscores the importance of
+multi-path validation approach to enhance the overall security and resilience
+of Web PKI infrastructure.
 
 # Conventions and Definitions
 
@@ -125,7 +148,7 @@ An example of a response for an unsuccesful validation.
 ~~~
 {
  "ok": false,
- "error": "LIS sawrecord 'xyz' on example.com which was not present from vantage point LIS"
+ "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
 }
 ~~~
 
