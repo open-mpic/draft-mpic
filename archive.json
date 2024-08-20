@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-18T01:19:44.783756+00:00",
+  "timestamp": "2024-08-20T01:14:59.237503+00:00",
   "repo": "bwesterb/draft-mpic",
   "labels": [
     {
@@ -77,7 +77,7 @@
     {
       "number": 2,
       "id": "I_kwDOMYks0s6TAY_-",
-      "title": "Sort out authentication",
+      "title": "Add CA authentication mechanism for the API endpoints",
       "url": "https://github.com/bwesterb/draft-mpic/issues/2",
       "state": "OPEN",
       "author": "bwesterb",
@@ -86,7 +86,7 @@
       "labels": [],
       "body": "Probably best to make optional and suggest `Authorization` header for token.",
       "createdAt": "2024-08-14T17:00:26Z",
-      "updatedAt": "2024-08-14T17:00:26Z",
+      "updatedAt": "2024-08-19T19:42:15Z",
       "closedAt": null,
       "comments": []
     },
@@ -142,7 +142,7 @@
       "labels": [],
       "body": "Do we want to add alpn?",
       "createdAt": "2024-08-14T17:03:27Z",
-      "updatedAt": "2024-08-17T02:42:26Z",
+      "updatedAt": "2024-08-19T20:45:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -151,6 +151,27 @@
           "body": "Right now the open-mpic API is specified to support http, dns, alpn, and caa.\r\nIs there a reason to hold off on supporting that with v1? If not then we can forge ahead with it.",
           "createdAt": "2024-08-17T02:42:25Z",
           "updatedAt": "2024-08-17T02:42:25Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "OWNER",
+          "body": "alpn is more difficult to implement, and it's rarely used. We could leave it out (for now), make it optional to implement (for now), or insist on it.",
+          "createdAt": "2024-08-19T09:27:33Z",
+          "updatedAt": "2024-08-19T09:27:33Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I would vote for limiting the scope for the first draft. ALPN can be a future extension.",
+          "createdAt": "2024-08-19T19:47:47Z",
+          "updatedAt": "2024-08-19T19:47:47Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That works for me. It's possible that real-world implementations will end up functionally ahead of the IETF draft given the current requirement timelines, so we would then just maintain a tagged reference implementation that conforms precisely to the draft spec (no ALPN).",
+          "createdAt": "2024-08-19T20:45:31Z",
+          "updatedAt": "2024-08-19T20:45:31Z"
         }
       ]
     },
@@ -199,6 +220,37 @@
           "body": "We were just having this conversation earlier today about how \"requirements-aware\" the API should be and to what extent it should enforce them.\r\nThe policy to specify is a really interesting idea.\r\nAs of this moment, the open-mpic API allows for specification of any value for the quorum, with the value of 0 effectively rendering it a logging-only service that interprets all outcomes as passing. I am thinking of proposing a change to that, and have a pull request that's under review which nudges validation logic more towards the requirements-aware side of things.\r\nAt the same time, the quorum count is currently an optional parameter. In its absence, the default can either be fully configurable by whoever owns the services (i.e. set it to something like 5 in a config file) or it can be programmatically derived based on the count of remote perspectives being interrogated (i.e. `perspective_count - 1` or `perspective_count - 2` depending on whether that count is <6 or not.)\r\n\r\nAnyway in the interest of making fast progress on this, here's my current thinking and what I'm considering implementing in the coming days, though I'm 100% OK with changing completely if my reasoning is faulty. \r\n\r\nI propose that quorum count remain an optional parameter to specify to the service, to allow for a higher-than-minimum-allowed-by-the-requirements threshold. If you want a quorum of 100%, that should be possible.\r\n\r\nI also propose that the default quorum is requirements-aware (programmatically derived). The logic used for deriving it can be policy-specific... that's something I hadn't thought of. I don't have a strong opinion on whether that should be how the service applies logic (i.e., it can apply a _non-current policy_) or whether it should just always be updated to reflect the current policy, and versioned accordingly. Perhaps the latter?\r\n\r\nI also propose that the quorum count in the API request (assuming it's a whole number) is allowed to be below the required minimum only if the API is run in a diagnostics/dev mode with value validation (as opposed to request structure validation) disabled. That, or include a warning in the response that the quorum count used is below the required threshold and therefore cannot actually be used to support cert issuance. Not sure if the latter is really a useful use case to support, though.",
           "createdAt": "2024-08-17T03:23:18Z",
           "updatedAt": "2024-08-17T03:23:18Z"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOMYks0s6TYF9O",
+      "title": "Endpoint naming",
+      "url": "https://github.com/bwesterb/draft-mpic/issues/8",
+      "state": "OPEN",
+      "author": "sciros",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This question has come up as part of open-mpic as well but we may as well discuss it all here to keep things synced up.\r\n\r\nWhat should the endpoints be for the various validations/checks that we'll want performed? Due to the nature of the industry terms, there's no obviously elegant approach.\r\n\r\nI figured an easy way to start the conversation would be to throw some ideas out there to beat up on. Gemini and ChatGPT were happy to oblige, though each gave me quite different results for my question about this. Here was my prompt:\r\n\r\n> Let's talk about PKI and certificate issuance. I want to brainstorm endpoint naming for an API that would do multi-perspective issuance corroboration for various validation checks.\r\nThere are several kinds of \"verifications\" or \"validations\" that get run as part of issuing a signed certificate. Correct me where I'm wrong, because I want to be very technically pedantic about this, but I think of the checks as being, roughly, DCV (domain control validation) and then CAA (certificate authority authorization) checking. With DCV the word \"validation\" is already in the name, and with CAA it's not, so I think many people in the PKI space do refer to CAA record validation as a \"CAA check,\" and I've seen the occasional article where, perhaps for the sake of parallel terminology, people will talk of a \"DCV check.\" But if I wanted to have an API with endpoints that carry out these various verifications, what is a good way to organize and name them? Perhaps DCV should be broken out into the various validation methods? And then CAA is just alongside those as \"yet another record type\" to check the presence of? Or maybe it's \"/dcv-check\" and \"/caa-check\" and then specifying in the request body what kind of DCV validation type to carry out (HTTP, etc.)? Please ruminate on this for me.\r\n\r\nGemini gave me the following options:\r\n\r\n> **Option 1:** Hierarchical Structure; clear separation of concerns, detailed endpoint names.\r\n> `/validations/dcv`\r\n> `/validations/dcv/http`\r\n> `/validations/dcv/dns`\r\n> `/validations/dcv/email`\r\n> ...\r\n> `/validations/caa`\r\n> `/validations/ocsp` (or other validation types)\r\n> \r\n> **Option 2:** Flat Structure with Query Parameters; simplicity, flexibility.\r\n> `/validate` (or `/verify`)\r\n> Query parameters:\r\n> `type`: `dcv`, `caa`, `ocsp`, etc.\r\n> `method`: `http`, `dns`, `email`, etc. (for DCV)\r\n> \r\n> **Option 3:** Combined Approach; balance between hierarchy and simplicity.\r\n> `/dcv`\r\n> `/dcv/http`\r\n> `/dcv/dns`\r\n> `/dcv/email`\r\n> `/caa`\r\n> `/ocsp` (or other validation types)\r\n> `/validate` for generic validation requests with query parameters \r\n\r\nPersonally I wasn't fond of any of these, although if I had to choose between the above I'd go with some version of option 1 or option 3.\r\n\r\nChatGPT 4o gave me a very different answer, seemingly being led by my prompt a bit more, so I found myself biased towards it.\r\n\r\n> 1. Endpoint Structure Overview\r\n>   **DCV** (Domain Control Validation): Since DCV involves different methods (HTTP, DNS, email, etc.), it makes sense to either have \r\n> separate endpoints for each method or a single endpoint with the method specified in the request.\r\n>   **CAA** (Certificate Authority Authorization): CAA is more straightforward, typically involving a single check to see if the domain has specific CAA records that allow the issuance of a certificate by a CA.\r\n> 2. Naming Conventions\r\n> Consistency is key. If you choose to use the term \"check\" for CAA, it might be beneficial to apply it uniformly, even to DCV, despite \"validation\" already being in the name.\r\n> 3. Potential Endpoint Structures\r\n>     1. **Option A**: Separate Endpoints for Each DCV Method\r\n>     `/dcv/http-check`: Validates domain control via HTTP.\r\n>     `/dcv/dns-check`: Validates domain control via DNS.\r\n>     `/dcv/email-check`: Validates domain control via email.\r\n>     `/caa-check`: Checks the CAA records for the domain.\r\n>     Pros: Clear separation of concerns, Easy to manage and extend if new DCV methods are added.\r\n>     Cons: Potentially more endpoints to maintain.\r\n>    \r\n>     2. **Option B**: Unified DCV Endpoint with Method in Request\r\n>     `/dcv-check`: Single endpoint for DCV validation. The method (HTTP, DNS, email) is specified in the request body or as a query parameter.\r\n>     `/caa-check`: Same as in Option A.\r\n>     Pros: Fewer endpoints, which might simplify API documentation, Easier to handle common validation logic.\r\n>     Cons: Slightly more complex request handling. Less explicit endpoint naming.\r\n\r\nI'm personally partial to ChatGPT's **Option B** (and using a request body parameter for the method), as that's the direction I've proposed taking the open-mpic reference implementation for now and it's very close to its current state (v1.0.1 has `/validation` and `/caa-check` paths). But I don't know if it's the best direction to take and figure this is one of the first things we should sort out anyway for a standard API.",
+      "createdAt": "2024-08-19T06:32:54Z",
+      "updatedAt": "2024-08-19T21:29:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "OWNER",
+          "body": "Let me add another dimension to this discussion.\r\n\r\nInspired by certificate transparency, I proposed using `/mpic/v1` (or for the draft version now `/mpic/draft00`.)\r\n\r\n- Putting `/mpic` in the prefix allows multiple services to be run under the same URL.\r\n- Putting the version in the prefix (as compared to the request) makes it easier to run two different implementations for two different versions.\r\n\r\nIn certificate transparency, all actions have a separate endpoint (`add-chain`, `add-pre-chain`, `get-entries`, `get-sth`, etc). This makes it easier to cache or rate-limit certain endpoints.\r\n\r\nI don't see a similar advantage of putting the method in the URL in case of MPIC.",
+          "createdAt": "2024-08-19T09:23:06Z",
+          "updatedAt": "2024-08-19T09:23:06Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks Bas, that's a good point. I think specifying `/mpic/{version}` (or draft) as the base URL is good.\r\nI also agree that putting the version in the URL is sensible if you want to enable/encourage running multiple versions of the API. Especially if you are envisioning a CT log kind of situation -- many CAs posting to a few MPIC enablers -- this makes a lot of sense. If the open source, roll-your-own-mpic implementation manages to find adoption, it may be a different dynamic, but that's far from a sure thing and this kind of flexibility in the API is valuable.\r\n\r\nThat still leaves the question of the method endpoints. I agree that `dcv-html`, `dcv-dns`, etc. being separate endpoints is not particularly useful the way it can be for CT. So it's more about what makes for a more elegant and usable spec. I personally do think that there should be _some_ request path organization of what to corroborate, so it's not just \"do mpic\" and then the requested corroboration(s) is buried in the request body. To me that would feel clunky and unconventional.\r\n\r\nHow do we feel about, for example:\r\n`/mpic/v1/caa-check` (and specifying CAA specific parameters in the body)\r\n`/mpic/v1/dcv-check` (and specifying the DCV method and other relevant parameters in the body)\r\n`/mpic/v1/dcv-with-caa-check`\r\n\r\nOr is there a preference instead for paths like like `/mpic/v1/caa` and `/mpic/v1/dcv/{method}`?",
+          "createdAt": "2024-08-19T21:29:31Z",
+          "updatedAt": "2024-08-19T21:29:31Z"
         }
       ]
     }
