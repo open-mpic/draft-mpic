@@ -32,10 +32,10 @@ author:
     organization: Cloudflare
     email: "bas@cloudflare.com"
 normative:
- - RFC8555
+ RFC8555:
 
 informative:
- - RFC6570
+ RFC6570:
 
 
 --- abstract
@@ -58,7 +58,7 @@ of domain control validation (DCV), including
 but not limited to via HTTP, DNS, and ALPN.
 
 ## MPIC
-Several, but not all, CAs use the specific DCV methods of ACME {{RFC855}}.
+Several, but not all, CAs use the specific DCV methods of ACME {{RFC8555}}.
 Domain control validation is vulnerable to DNS and BGP hijacks.
 These can be partially mitigated by performing DCV from multiple
 vantage points, which is dubbed "multiple perspective issuance corroboration" (MPIC).
@@ -100,7 +100,7 @@ The service will respond with a JSON object containing MPIC results.
 There are three different MPIC validation methods, described below. The request
 object has a `method` field that allows to distinguish between each.
 
-## `caa` validation method
+## `caa` validation method {#caa-api}
 
 A `caa` requests asks the MPIC service to retrieve the relevant CAA DNS
 records for a given domain from multiple vantage points.
@@ -205,15 +205,15 @@ the request fails, or the body does not pass these checks, then it has failed.
 Along side, the MPIC server queries for the CAA records for the
 `domain` if the `caa-check` request parameter is set to "true".
 
-On success, the response object contains a top-level `success` field set to
-`true`, and `checks` field which itself is an object of two fields:
+If either HTTP or CAA validation (when requested) fail,
+the response objects contains a top-level
+`success` field set to `false`, and contains an `error` field
+that describes the error.
 
-* `http-check` (required, object): Contains an indentifer for validation result.
-    * `success` (required, boolean): Indicates the success of the HTTP challenge validation from each vantage point.
+If both succeed, the response object contains a top-level `success` field set to `true`.
 
-* `caa-check` (required, array of object): If `caa-check` is set to true, contains an array of identifier objects that the order pertains to. Otherwise, it is omitted.
-    * `success` (required, boolean): Indicates the success of consistent CAA record response from each vantage point.
-    * `caa` (required, object): Contains `caa` object field as described [TODO add ref] in the above subsection.
+If a CAA check was requested, the response object will contain a top
+level `caa` field as described in {{caa-api}}.
 
 An example of a response for a succesful validation with `caa-check` set to
 false.
@@ -221,11 +221,6 @@ false.
 ~~~
 {
  "success": true,
- "checks": {
-  "http-check": {
-    "success": true
-  }
- }
 }
 ~~~
 
@@ -235,69 +230,25 @@ true.
 ~~~
 {
  "success": true,
- "checks": {
-  "http-check": {
-    "success": true
-  },
-  "caa-check": {
-    "success": true,
-    "caa": {
-      "domain": "example.com",
-      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
-    }
-  }
+ "caa": {
+   "domain": "example.com",
+   "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
  }
 }
 ~~~
 
-On failure, the response object will have the top-level `success` field set to
-`false`, and the `checks` field describing corresponding error details specific
-to each validation method failure desscription. A separate top-level `error`
-field describes the error.
-
-* `error` (required, string): Error message.
-
-An example of a response where the validation failed with caa-check set to true, and the `caa` method being successful.
+An example of a response where the validation failed with caa-check set
+to true, and the `caa` method being successful.
 
 ~~~
 {
  "success": false,
- "error": "HTTP method validation failed",
- "checks": {
-   "http-check": {
-    "success": false,
-    "error": "HTTP ACME challenge validation failed at LIS"
-   },
-   "caa-check": {
-     "success": true,
-     "caa": {
-      "domain": "example.com",
-      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
-    }
-   }
- }
+ "error": "HTTP found unexpected value at LIS vantage point",
 }
 ~~~
 
 Similarly example of a response where caa-check set to true, and both
 methods fail.
-
-~~~
-{
- "success": false,
- "error": "HTTP and CAA methods both failed",
- "checks": {
-   "http-check": {
-    "success": false,
-    "error": "HTTP ACME challenge validation failed at LIS"
-   },
-   "caa-check": {
-     "success": false,
-     "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
-   }
- }
-}
-~~~
 
 
 ## `dns` method
