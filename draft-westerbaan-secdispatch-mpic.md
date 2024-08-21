@@ -207,7 +207,7 @@ On success, the response object contains a top-level `success` field set to
 `true`, and `checks` field which itself is an object of two fields:
 
 * `http-check` (required, object): Contains an indentifer for validation result.
-    * `success` (required, boolean): Indicates the success of the HTTP challenge validation from each vantage point. 
+    * `success` (required, boolean): Indicates the success of the HTTP challenge validation from each vantage point.
 
 * `caa-check` (required, array of object): If `caa-check` is set to true, contains an array of identifier objects that the order pertains to. Otherwise, it is omitted.
     * `success` (required, boolean): Indicates the success of consistent CAA record response from each vantage point.
