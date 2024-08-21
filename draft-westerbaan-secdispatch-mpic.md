@@ -98,31 +98,16 @@ The service will respond with a JSON object containing MPIC results.
 There are three different MPIC validation methods, described below. The request
 object has a `method` field that allows to distinguish between each.
 
-## `CAA` validation method
+## `caa` validation method
 
-A `CAA` requests asks the MPIC service to retrieve the relevant CAA DNS
+A `caa` requests asks the MPIC service to retrieve the relevant CAA DNS
 records for a given domain from multiple vantage points.
 
-The request JSON object has the following specific fields.
+This method has the following specific fields.
 
-* `domain` The domain to check the CAA records for.
+* `domain` (required, string): The domain to check the CAA records for.
 
-If successful (described in TODO REF below), the response object contains a
-`success` field set to `true`, and an `caa` field, which itself is an object
-with two fields:
-
-* `domain` The domain on which the CAA records were found. This could be
-  a parent domain of the requested `domain`.
-
-* `records` A list of base64 encoded CAA records.
-
-On failure, the response object will have the `success` field set to `false`,
-and an `error` field describing the error.
-
-[[ TODO do we to define the possible errors, or at least assign
-        some codes? ]]
-
-An example request is given below
+An example request is given below.
 
 ~~~
 POST /staging/mpic/draft-00
@@ -135,6 +120,15 @@ Content-Type: application/json
 }
 ~~~
 
+If successful (described in TODO REF below), the response object contains a
+`success` field set to `true`, and an `caa` field, which itself is an object
+with two fields:
+
+* `domain` The domain on which the CAA records were found. This could be
+  a parent domain of the requested `domain`.
+
+* `records` A list of base64 encoded CAA records.
+
 An example of a response for a succesful validation.
 
 ~~~
@@ -146,6 +140,12 @@ An example of a response for a succesful validation.
  }
 }
 ~~~
+
+On failure, the response object will have the `success` field set to `false`,
+and an `error` field describing the error.
+
+[[ TODO do we to define the possible errors, or at least assign
+        some codes? ]]
 
 An example of a response for an unsuccesful validation.
 
@@ -162,32 +162,141 @@ An example of a response for an unsuccesful validation.
 
 
 ## `http` method
+A `http` requests the MPIC server to perform ACME HTTP challenge validation
+[RFC8555] for the domain's HTTP server from each distributed vantage point.
 
-TODO
+Performs a GET from multiple vantage points, and checks whether the body matches
+expectation. Optionally, it allows performing an additional CAA record lookup
+for the domain.
 
-Performs a GET from multiple vantage points, and checks whether the body
-matches expectation.
+The request JSON object has the following specific fields.
 
-Required request fields
+* `domain` (required, string): The domain name being verified.
+* `path` (required, string): The path at which the ACME HTTP challenge resource is provisioned.
+* `expected` (required, string): Expected body of the response [[ TODO what if it's not UTF-8? ]]
+* `caa-check` (optional, boolean): Performs CAA validation at the same time for the domain as described above. Defaults to true.
 
-* `domain`
-* `path`
-* `expected` Expected body [[ TODO what if it's not UTF-8? ]]
+~~~
+POST /staging/mpic/draft-00
+Host: mpc.example.com
+Content-Type: application/json
 
-Makes request to `http://[domain][path]`.
+{
+ "method": "http",
+ "domain": "some.example.com",
+ "path": ".well-known/acme-challenge/token",
+ "expected": "challenge_token",
+ "caa-check": false,
+}
+~~~
 
-Optional request fields
+The MPIC server constructs a URL by populating the URL template
+[RFC6570], `http://{domain}/{path}`, and verifies that the resulting URL is
+well-formed, before making a HTTP GET request to the URL from each vantage
+point. Each vantage point SHOULD follow redirects when dereferencing the URL.
+The MPIC server verifies that `expected` value provided by the client matches
+with the body of the response received from each vantage point.
 
-* `caa` Performs CAA validation at the same time for the domain as
-  described above. Defaults to true.
+If the above verifications succeeds, then the validation is successful. If
+the request fails, or the body does not pass these checks, then it has failed.
 
-Response object.
+Along side, the MPIC server queries for the CAA records for the
+`domain` if the `caa-check` request parameter is set to "true".
 
-Contains `ok` and `error` as in `caa` method.
+On success, the response object contains a top-level `success` field set to
+`true`, and `checks` field which itself is an object of two fields:
 
-If `caa` was set to true, contains `caa` field as described above.
+* `http-check` (required, object): Contains an indentifer for validation result.
+    * `success` (required, boolean): Indicates the success of the HTTP challenge validation from each vantage point. 
 
-TODO example
+* `caa-check` (required, array of object): If `caa-check` is set to true, contains an array of identifier objects that the order pertains to. Otherwise, it is omitted.
+    * `success` (required, boolean): Indicates the success of consistent CAA record response from each vantage point.
+    * `caa` (required, object): Contains `caa` object field as described [TODO add ref] in the above subsection.
+
+An example of a response for a succesful validation with `caa-check` set to
+false.
+
+~~~
+{
+ "success": true,
+ "checks": {
+  "http-check": {
+    "success": true
+  }
+ }
+}
+~~~
+
+An example of a response for a succesful validation with `caa-check` set to
+true.
+
+~~~
+{
+ "success": true,
+ "checks": {
+  "http-check": {
+    "success": true
+  },
+  "caa-check": {
+    "success": true,
+    "caa": {
+      "domain": "example.com",
+      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
+    }
+  }
+ }
+}
+~~~
+
+On failure, the response object will have the top-level `success` field set to
+`false`, and the `checks` field describing corresponding error details specific
+to each validation method failure desscription. A separate top-level `error`
+field describes the error.
+
+* `error` (required, string): Error message.
+
+An example of a response where the validation failed with caa-check set to true, and the `caa` method being successful.
+
+~~~
+{
+ "success": false,
+ "error": "HTTP method validation failed",
+ "checks": {
+   "http-check": {
+    "success": false,
+    "error": "HTTP ACME challenge validation failed at LIS"
+   },
+   "caa-check": {
+     "success": true,
+     "caa": {
+      "domain": "example.com",
+      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
+    }
+   }
+ }
+}
+~~~
+
+Similarly example of a response where caa-check set to true, and both
+methods fail.
+
+~~~
+{
+ "success": false,
+ "error": "HTTP and CAA methods both failed",
+ "checks": {
+   "http-check": {
+    "success": false,
+    "error": "HTTP ACME challenge validation failed at LIS"
+   },
+   "caa-check": {
+     "success": false,
+     "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
+   }
+ }
+}
+~~~
+
 
 ## `dns` method
 
