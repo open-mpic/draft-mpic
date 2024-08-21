@@ -1,6 +1,6 @@
-# TODO - Your title
+# Multi-Perspective Issuance Corroboration (MPIC) Service
 
-This is the working area for the individual Internet-Draft, "TODO - Your title".
+This is the working area for the individual Internet-Draft, "Multi-Perspective Issuance Corroboration (MPIC) Service".
 
 * [Editor's Copy](https://bwesterb.github.io/draft-mpic/#go.draft-westerbaan-secdispatch-mpic.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-westerbaan-secdispatch-mpic)
