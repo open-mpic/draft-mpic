@@ -32,8 +32,10 @@ author:
     organization: Cloudflare
     email: "bas@cloudflare.com"
 normative:
+ - RFC8555
 
 informative:
+ - RFC6570
 
 
 --- abstract
@@ -41,36 +43,36 @@ informative:
 This memo defines an API for a service to offer multi-perspective issuance
 corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
 forum requires MPIC to be performed by all certification authorities (CAs) in
-the Web PKI.
+the Web PKI. This API allows CAs to use external MPIC infrastructure.
 
 --- middle
 
 # Introduction
 
-The Web PKI infrastructure provides the foundation for securing communications
-across the Internet. At the core of this model are certificates, issued by
-Certification Authorities (CAs), which are used to authenticate domain names.
-For certificate issuance, a CA is required to verify that the applicant
-requesting a certificate is in authority of the provided domain. Automatic
-Certificate Management Environment (ACME) protocol [RFC8555] provides a
-simplified and automated certificate issuance mechanism such as placing a
-CA-provided challenge on a web server, or adding a new DNS record for the
-domain. However, this process generally involves a single vantage-point
-validation mechanism which opens door for DNS hijacking, phishing, and other
-types of attack that can allow unauthorized entities to pass validation.
+## DCV
+Before issuing a certificate to a subscriber,
+certificate authorities are required to validate that the subscriber
+indeed controls the domains on the certificate.
+For this purpose certificate authorities use various methods
+of domain control validation (DCV), including
+but not limited to via HTTP, DNS, and ALPN.
 
-This document introduces Multi-Path Issuance Collaboration (MPIC), a framework
-designed to leverage distributed trust and multiple independent paths for
-certificate issuance validation. Use of MPIC by CAs can ensure that no single
-point of compromise exists in the validation chain, and reduces the risk of
-certificate misissuance. The framework further extends to provide multi-path
-CAA record validation to help ensure that CAs are authorized to issue a
-certificate for the domain.
+## MPIC
+Several, but not all, CAs use the specific DCV methods of ACME {{RFC855}}.
+Domain control validation is vulnerable to DNS and BGP hijacks.
+These can be partially mitigated by performing DCV from multiple
+vantage points, which is dubbed "multiple perspective issuance corroboration" (MPIC).
+corroboration (MPIC) for domain control validation.
+Ballot SC-67 v3 of CA/B forum requires MPIC to be performed
+by all certification authorities (CAs) in the future.
 
-Notably, the CA/B Forum Ballot SC-67 v3 requires all CAs to perform MPIC for
-certificate issuance. This industry-wide mandate underscores the importance of
-multi-path validation approach to enhance the overall security and resilience
-of Web PKI infrastructure.
+## MPIC service
+Running MPIC requires maintaining a presence across the globe.
+For smaller CAs it may make sense to run a shared MPIC service
+or outsource it to a third party.
+This memo specifies a standardised API for such a usecase.
+Another usecase is for a CA to have a standby MPIC service
+in case its primary fails.
 
 # Conventions and Definitions
 
@@ -163,7 +165,7 @@ An example of a response for an unsuccesful validation.
 
 ## `http` method
 A `http` requests the MPIC server to perform ACME HTTP challenge validation
-[RFC8555] for the domain's HTTP server from each distributed vantage point.
+{{RFC8555}} for the domain's HTTP server from each distributed vantage point.
 
 Performs a GET from multiple vantage points, and checks whether the body matches
 expectation. Optionally, it allows performing an additional CAA record lookup
@@ -191,7 +193,7 @@ Content-Type: application/json
 ~~~
 
 The MPIC server constructs a URL by populating the URL template
-[RFC6570], `http://{domain}/{path}`, and verifies that the resulting URL is
+{{RFC6570}}, `http://{domain}/{path}`, and verifies that the resulting URL is
 well-formed, before making a HTTP GET request to the URL from each vantage
 point. Each vantage point SHOULD follow redirects when dereferencing the URL.
 The MPIC server verifies that `expected` value provided by the client matches
