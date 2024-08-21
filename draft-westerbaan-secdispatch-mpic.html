@@ -11,7 +11,7 @@
        This memo defines an API for a service to offer multi-perspective issuance
 corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
 forum requires MPIC to be performed by all certification authorities (CAs) in
-the Web PKI. 
+the Web PKI. This API allows CAs to use external MPIC infrastructure. 
     " name="description">
 <meta content="xml2rfc 3.22.0" name="generator">
 <meta content="dcv" name="keyword">
@@ -1071,7 +1071,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-abstract-1">This memo defines an API for a service to offer multi-perspective issuance
 corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
 forum requires MPIC to be performed by all certification authorities (CAs) in
-the Web PKI.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+the Web PKI. This API allows CAs to use external MPIC infrastructure.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1138,16 +1138,27 @@ the Web PKI.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         </h2>
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
-            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-dcv" class="internal xref">DCV</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-mpic" class="internal xref">MPIC</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-mpic-service" class="internal xref">MPIC service</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-api-structure" class="internal xref">API Structure</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-caa-validation-method" class="internal xref"><code>caa</code> validation method</a></p>
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-caa-validation-method" class="internal xref"><code>caa</code> validation method</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-http-method" class="internal xref"><code>http</code> method</a></p>
@@ -1170,7 +1181,15 @@ the Web PKI.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
@@ -1187,28 +1206,46 @@ the Web PKI.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">The Web PKI infrastructure provides the foundation for securing communications
-across the Internet. At the core of this model are certificates, issued by
-Certification Authorities (CAs), which are used to authenticate domain names.
-For certificate issuance, a CA is required to verify that the applicant
-requesting a certificate is in authority of the provided domain. Automatic
-Certificate Management Environment (ACME) protocol [RFC8555] provides a
-simplified and automated certificate issuance mechanism such as placing a
-CA-provided challenge on a web server, or adding a new DNS record for the
-domain. However, this process generally involves a single vantage-point
-validation mechanism which opens door for DNS hijacking, phishing, and other
-types of attack that can allow unauthorized entities to pass validation.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">This document introduces Multi-Path Issuance Collaboration (MPIC), a framework
-designed to leverage distributed trust and multiple independent paths for
-certificate issuance validation. Use of MPIC by CAs can ensure that no single
-point of compromise exists in the validation chain, and reduces the risk of
-certificate misissuance. The framework further extends to provide multi-path
-CAA record validation to help ensure that CAs are authorized to issue a
-certificate for the domain.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">Notably, the CA/B Forum Ballot SC-67 v3 requires all CAs to perform MPIC for
-certificate issuance. This industry-wide mandate underscores the importance of
-multi-path validation approach to enhance the overall security and resilience
-of Web PKI infrastructure.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<div id="dcv">
+<section id="section-1.1">
+        <h3 id="name-dcv">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-dcv" class="section-name selfRef">DCV</a>
+        </h3>
+<p id="section-1.1-1">Before issuing a certificate to a subscriber,
+certificate authorities are required to validate that the subscriber
+indeed controls the domains on the certificate.
+For this purpose certificate authorities use various methods
+of domain control validation (DCV), including
+but not limited to via HTTP, DNS, and ALPN.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="mpic">
+<section id="section-1.2">
+        <h3 id="name-mpic">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-mpic" class="section-name selfRef">MPIC</a>
+        </h3>
+<p id="section-1.2-1">Several, but not all, CAs use the specific DCV methods of ACME <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>.
+Domain control validation is vulnerable to DNS and BGP hijacks.
+These can be partially mitigated by performing DCV from multiple
+vantage points, which is dubbed "multiple perspective issuance corroboration" (MPIC).
+corroboration (MPIC) for domain control validation.
+Ballot SC-67 v3 of CA/B forum requires MPIC to be performed
+by all certification authorities (CAs) in the future.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="mpic-service">
+<section id="section-1.3">
+        <h3 id="name-mpic-service">
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-mpic-service" class="section-name selfRef">MPIC service</a>
+        </h3>
+<p id="section-1.3-1">Running MPIC requires maintaining a presence across the globe.
+For smaller CAs it may make sense to run a shared MPIC service
+or outsource it to a third party.
+This memo specifies a standardised API for such a usecase.
+Another usecase is for a CA to have a standby MPIC service
+in case its primary fails.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1241,7 +1278,7 @@ In the running example <code>https://mpc.example.com/staging/mpic/draft-00</code
 The service will respond with a JSON object containing MPIC results.<a href="#section-3-5" class="pilcrow">¶</a></p>
 <p id="section-3-6">There are three different MPIC validation methods, described below. The request
 object has a <code>method</code> field that allows to distinguish between each.<a href="#section-3-6" class="pilcrow">¶</a></p>
-<div id="caa-validation-method">
+<div id="caa-api">
 <section id="section-3.1">
         <h3 id="name-caa-validation-method">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-caa-validation-method" class="section-name selfRef"><code>caa</code> validation method</a>
@@ -1315,7 +1352,7 @@ and an <code>error</code> field describing the error.<a href="#section-3.1-10" c
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-http-method" class="section-name selfRef"><code>http</code> method</a>
         </h3>
 <p id="section-3.2-1">A <code>http</code> requests the MPIC server to perform ACME HTTP challenge validation
-[RFC8555] for the domain's HTTP server from each distributed vantage point.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> for the domain's HTTP server from each distributed vantage point.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">Performs a GET from multiple vantage points, and checks whether the body matches
 expectation. Optionally, it allows performing an additional CAA record lookup
 for the domain.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
@@ -1350,7 +1387,7 @@ Content-Type: application/json
 </pre><a href="#section-3.2-5" class="pilcrow">¶</a>
 </div>
 <p id="section-3.2-6">The MPIC server constructs a URL by populating the URL template
-[RFC6570], <code>http://{domain}/{path}</code>, and verifies that the resulting URL is
+<span>[<a href="#RFC6570" class="cite xref">RFC6570</a>]</span>, <code>http://{domain}/{path}</code>, and verifies that the resulting URL is
 well-formed, before making a HTTP GET request to the URL from each vantage
 point. Each vantage point <span class="bcp14">SHOULD</span> follow redirects when dereferencing the URL.
 The MPIC server verifies that <code>expected</code> value provided by the client matches
@@ -1359,115 +1396,47 @@ with the body of the response received from each vantage point.<a href="#section
 the request fails, or the body does not pass these checks, then it has failed.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
 <p id="section-3.2-8">Along side, the MPIC server queries for the CAA records for the
 <code>domain</code> if the <code>caa-check</code> request parameter is set to "true".<a href="#section-3.2-8" class="pilcrow">¶</a></p>
-<p id="section-3.2-9">On success, the response object contains a top-level <code>success</code> field set to
-<code>true</code>, and <code>checks</code> field which itself is an object of two fields:<a href="#section-3.2-9" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-10.1">
-            <p id="section-3.2-10.1.1"><code>http-check</code> (required, object): Contains an indentifer for validation result.<a href="#section-3.2-10.1.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-10.1.2.1">
-                <p id="section-3.2-10.1.2.1.1"><code>success</code> (required, boolean): Indicates the success of the HTTP challenge validation from each vantage point.<a href="#section-3.2-10.1.2.1.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-          <li class="normal" id="section-3.2-10.2">
-            <p id="section-3.2-10.2.1"><code>caa-check</code> (required, array of object): If <code>caa-check</code> is set to true, contains an array of identifier objects that the order pertains to. Otherwise, it is omitted.<a href="#section-3.2-10.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-10.2.2.1">
-                <p id="section-3.2-10.2.2.1.1"><code>success</code> (required, boolean): Indicates the success of consistent CAA record response from each vantage point.<a href="#section-3.2-10.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-3.2-10.2.2.2">
-                <p id="section-3.2-10.2.2.2.1"><code>caa</code> (required, object): Contains <code>caa</code> object field as described [TODO add ref] in the above subsection.<a href="#section-3.2-10.2.2.2.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
-<p id="section-3.2-11">An example of a response for a succesful validation with <code>caa-check</code> set to
-false.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-12">
+<p id="section-3.2-9">If either HTTP or CAA validation (when requested) fail,
+the response objects contains a top-level
+<code>success</code> field set to <code>false</code>, and contains an <code>error</code> field
+that describes the error.<a href="#section-3.2-9" class="pilcrow">¶</a></p>
+<p id="section-3.2-10">If both succeed, the response object contains a top-level <code>success</code> field set to <code>true</code>.<a href="#section-3.2-10" class="pilcrow">¶</a></p>
+<p id="section-3.2-11">If a CAA check was requested, the response object will contain a top
+level <code>caa</code> field as described in <a href="#caa-api" class="auto internal xref">Section 3.1</a>.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
+<p id="section-3.2-12">An example of a response for a succesful validation with <code>caa-check</code> set to
+false.<a href="#section-3.2-12" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-13">
 <pre>
 {
  "success": true,
- "checks": {
-  "http-check": {
-    "success": true
-  }
- }
 }
-</pre><a href="#section-3.2-12" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-13" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-13">An example of a response for a succesful validation with <code>caa-check</code> set to
-true.<a href="#section-3.2-13" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-14">
+<p id="section-3.2-14">An example of a response for a succesful validation with <code>caa-check</code> set to
+true.<a href="#section-3.2-14" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-15">
 <pre>
 {
  "success": true,
- "checks": {
-  "http-check": {
-    "success": true
-  },
-  "caa-check": {
-    "success": true,
-    "caa": {
-      "domain": "example.com",
-      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
-    }
-  }
+ "caa": {
+   "domain": "example.com",
+   "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
  }
 }
-</pre><a href="#section-3.2-14" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-15" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-15">On failure, the response object will have the top-level <code>success</code> field set to
-<code>false</code>, and the <code>checks</code> field describing corresponding error details specific
-to each validation method failure desscription. A separate top-level <code>error</code>
-field describes the error.<a href="#section-3.2-15" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-16.1">
-            <p id="section-3.2-16.1.1"><code>error</code> (required, string): Error message.<a href="#section-3.2-16.1.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-3.2-17">An example of a response where the validation failed with caa-check set to true, and the <code>caa</code> method being successful.<a href="#section-3.2-17" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-18">
+<p id="section-3.2-16">An example of a response where the validation failed with caa-check set
+to true, and the <code>caa</code> method being successful.<a href="#section-3.2-16" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-17">
 <pre>
 {
  "success": false,
- "error": "HTTP method validation failed",
- "checks": {
-   "http-check": {
-    "success": false,
-    "error": "HTTP ACME challenge validation failed at LIS"
-   },
-   "caa-check": {
-     "success": true,
-     "caa": {
-      "domain": "example.com",
-      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
-    }
-   }
- }
+ "error": "HTTP found unexpected value at LIS vantage point",
 }
-</pre><a href="#section-3.2-18" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-17" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-19">Similarly example of a response where caa-check set to true, and both
-methods fail.<a href="#section-3.2-19" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-20">
-<pre>
-{
- "success": false,
- "error": "HTTP and CAA methods both failed",
- "checks": {
-   "http-check": {
-    "success": false,
-    "error": "HTTP ACME challenge validation failed at LIS"
-   },
-   "caa-check": {
-     "success": false,
-     "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
-   }
- }
-}
-</pre><a href="#section-3.2-20" class="pilcrow">¶</a>
-</div>
+<p id="section-3.2-18">Similarly example of a response where caa-check set to true, and both
+methods fail.<a href="#section-3.2-18" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="dns-method">
@@ -1533,21 +1502,45 @@ methods fail.<a href="#section-3.2-19" class="pilcrow">¶</a></p>
 <p id="section-7-1">This document has no IANA actions.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="sec-combined-references">
 <section id="section-8">
-      <h2 id="name-normative-references">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      <h2 id="name-references">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
+<section id="section-8.1">
+        <h3 id="name-normative-references">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-    <dd>
+        <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC8555">[RFC8555]</dt>
+      <dd>
+<span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Hoffman-Andrews, J.</span>, <span class="refAuthor">McCarney, D.</span>, and <span class="refAuthor">J. Kasten</span>, <span class="refTitle">"Automatic Certificate Management Environment (ACME)"</span>, <span class="seriesInfo">RFC 8555</span>, <span class="seriesInfo">DOI 10.17487/RFC8555</span>, <time datetime="2019-03" class="refDate">March 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8555">https://www.rfc-editor.org/rfc/rfc8555</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 </dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-8.2">
+        <h3 id="name-informative-references">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC6570">[RFC6570]</dt>
+      <dd>
+<span class="refAuthor">Gregorio, J.</span>, <span class="refAuthor">Fielding, R.</span>, <span class="refAuthor">Hadley, M.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">D. Orchard</span>, <span class="refTitle">"URI Template"</span>, <span class="seriesInfo">RFC 6570</span>, <span class="seriesInfo">DOI 10.17487/RFC6570</span>, <time datetime="2012-03" class="refDate">March 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6570">https://www.rfc-editor.org/rfc/rfc6570</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
 </section>
 </div>
 <div id="acknowledgments">
