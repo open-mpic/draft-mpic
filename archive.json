@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-22T01:16:50.959637+00:00",
+  "timestamp": "2024-08-25T01:21:43.986246+00:00",
   "repo": "bwesterb/draft-mpic",
   "labels": [
     {
@@ -131,7 +131,7 @@
       "labels": [],
       "body": "We do not want retries to help the attacker.",
       "createdAt": "2024-08-14T17:01:58Z",
-      "updatedAt": "2024-08-21T15:29:04Z",
+      "updatedAt": "2024-08-23T12:27:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -144,9 +144,9 @@
         {
           "author": "birgelee",
           "authorAssociation": "NONE",
-          "body": "I agree with @sciros In open MPIC we are going with a `max-attempts` field to govern retries with the following description language:\r\n```\r\nThe maximum number of times validation or CAA checks should be retried as the result of a single API POST request. An implementation may choose to retry with the same or different perspectives each time. It is recommended implementations cap the number of distinct sets of perspectives that will ever validate a particular identifier to avoid adversaries retrying many times in the interest of getting favorable perspective sets.\r\n```",
+          "body": "I agree with @sciros In open MPIC we are going with a `max-attempts` field to govern retries with the following description language:\r\n\r\n\r\n> The maximum number of times validation or CAA checks should be retried as the result of a single API POST request. An implementation may choose to retry with the same or different perspectives each time. It is recommended implementations cap the number of distinct sets of perspectives that will ever validate a particular identifier to avoid adversaries retrying many times in the interest of getting favorable perspective sets.",
           "createdAt": "2024-08-21T15:29:03Z",
-          "updatedAt": "2024-08-21T15:29:03Z"
+          "updatedAt": "2024-08-23T12:27:46Z"
         }
       ]
     },
@@ -231,7 +231,7 @@
       "labels": [],
       "body": "Do we want the MPIC service to sign its responses as evidence.",
       "createdAt": "2024-08-14T17:03:51Z",
-      "updatedAt": "2024-08-21T15:36:33Z",
+      "updatedAt": "2024-08-23T12:24:08Z",
       "closedAt": null,
       "comments": [
         {
@@ -247,6 +247,13 @@
           "body": "I think signed responses might be helpful particularly if it is third party run. This could remove any suspicion on the part of the CA and immediately show that the CA called the API. I like moving more towards CA accountability and transparency and if a CA saves its API responses with signatures, we no longer need to trust the CAs word that they did MPIC, there is now an unquestionable log.",
           "createdAt": "2024-08-21T15:36:32Z",
           "updatedAt": "2024-08-21T15:36:32Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "OWNER",
+          "body": "I agree with the upsides. There is also a clear downside: signing responses requires a key that needs to be kept secure, and might be rolled once in a while.",
+          "createdAt": "2024-08-23T12:24:07Z",
+          "updatedAt": "2024-08-23T12:24:07Z"
         }
       ]
     },
@@ -262,7 +269,7 @@
       "labels": [],
       "body": "Should we allow the client to specify the details of the quorum? Eg. min 2 out of 10. Or just a policy? Eg. CA/B 2026. Or leave it completely to the service.",
       "createdAt": "2024-08-14T17:05:28Z",
-      "updatedAt": "2024-08-21T15:42:59Z",
+      "updatedAt": "2024-08-23T12:21:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -278,6 +285,13 @@
           "body": "There are two points to this conversation I would bring up.\r\n\r\n1. (which @sciros already mentioned) that quorum requirements change over time so a policy that is CAB Forum compliant now might not be in the future. Truly adhering to the CAB spec would mean changing the policy over time based on the implementation dates.\r\n2. This is more broad than just quorum, the number of perspectives used in the first place is also related to the CAB F requirements. If we fully take this route of the API enforcing the requirements, does it make sense to force the perspective count as well (i.e., asking for 2 perspectives after 3 are required throws an error).\r\n\r\nI am still thinking a bit more on this. I like auto quorum (so if you don't specify a quorum we go with what the CAB Forum says). I am still now sure how much the API should yell at you if you do something not CAB F compliant.",
           "createdAt": "2024-08-21T15:42:58Z",
           "updatedAt": "2024-08-21T15:42:58Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "OWNER",
+          "body": "What about two options:\r\n\r\n1. `balance` (default) Let the MPIC service choose. This allows the MPIC service to loosen or tighten requirements with more insight. Of course needs to meet current CA/B guidelines.\r\n2. `baseline` Follows the current minimum CA/B minimum requirements, and nothing more.\r\n\r\nI thought about adding a third `strict` option but I'm not quite sure how to define it.\r\n\r\n And of course we add an optional-to-implement API for the exact count.",
+          "createdAt": "2024-08-23T12:21:09Z",
+          "updatedAt": "2024-08-23T12:21:09Z"
         }
       ]
     },
@@ -331,7 +345,7 @@
       "labels": [],
       "body": "Should the API provide the response from each vantage point / perspective back to the client? Or should it provide a single overall result without exposing the results of individual perspectives?",
       "createdAt": "2024-08-20T23:17:08Z",
-      "updatedAt": "2024-08-21T16:37:07Z",
+      "updatedAt": "2024-08-23T12:09:41Z",
       "closedAt": null,
       "comments": [
         {
@@ -354,6 +368,13 @@
           "body": "I was involved in drafting the logging requirements for the CAB forum. The current requirements read that a CA must log the following:\r\n\r\nMulti-Perspective Issuance Corroboration attempts from each Network Perspective, minimally recording the following information:\r\n\r\n    a. an identifier that uniquely identifies the Network Perspective used;\r\n    b. the attempted domain name and/or IP address; and\r\n    c. the result of the attempt (e.g., \"domain validation pass/fail\", \"CAA permission/prohibition\").\r\n\r\nMulti-Perspective Issuance Corroboration quorum results for each attempted domain name or IP address represented in a Certificate request (i.e., \"3/4\" which should be interpreted as \"Three (3) out of four (4) attempted Network Perspectives corroborated the determinations made by the Primary Network Perspective).\r\n\r\nI advocate that the response from the API contain all of the data required to satisfy the logging requirements. I think this is particularly the case if we want to sign responses. Having the API include the logging requirements makes implementation easy: a CA simply needs to pipe API responses to its existing certificate issuance log stream. If the API response does not have this information, the CA has to do additional work to ensure it has access to the log stream from the API host and I personally think that is a bit of a mess (Open MPIC right now does not even use cloud watch logs which could get very large and costly if we actually had to log all of these requests in AWS). I think there are ways to discourage CAs from parsing out the corroboration data and coming to their own quorum conclusions.",
           "createdAt": "2024-08-21T16:37:05Z",
           "updatedAt": "2024-08-21T16:37:05Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "OWNER",
+          "body": "Ok, given those requirements we have to add support for it to the API. What about having a single `log` field in the response that is a string that contains the necessary information, but we leave the exact format unspecified so that clients are discouraged from parsing it?",
+          "createdAt": "2024-08-23T12:09:40Z",
+          "updatedAt": "2024-08-23T12:09:40Z"
         }
       ]
     },
