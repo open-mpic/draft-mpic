@@ -19,8 +19,8 @@ venue:
   type: "Working Group"
   mail: "secdispatch@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/secdispatch/"
-  github: "bwesterb/draft-mpic"
-  latest: "https://bwesterb.github.io/draft-mpic/draft-westerbaan-secdispatch-mpic.html"
+  github: "open-mpic/draft-mpic"
+  latest: "https://open-mpic.github.io/draft-mpic/draft-westerbaan-secdispatch-mpic.html"
 
 author:
  -
