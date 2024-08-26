@@ -7,7 +7,6 @@ This is the working area for the individual Internet-Draft, "Multi-Perspective I
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-westerbaan-secdispatch-mpic)
 * [Compare Editor's Copy to Individual Draft](https://open-mpic.github.io/draft-mpic/#go.draft-westerbaan-secdispatch-mpic.diff)
 
-
 ## Contributing
 
 See the
