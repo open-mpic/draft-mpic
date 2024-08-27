@@ -1,7 +1,7 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-25T01:21:43.986246+00:00",
-  "repo": "bwesterb/draft-mpic",
+  "timestamp": "2024-08-27T01:17:09.655877+00:00",
+  "repo": "open-mpic/draft-mpic",
   "labels": [
     {
       "name": "bug",
@@ -54,16 +54,16 @@
       "number": 1,
       "id": "I_kwDOMYks0s6TACJZ",
       "title": "Move to organisation",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/1",
-      "state": "OPEN",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/1",
+      "state": "CLOSED",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Shall we move this repo to an organisation?",
       "createdAt": "2024-08-14T16:09:14Z",
-      "updatedAt": "2024-08-21T16:07:11Z",
-      "closedAt": null,
+      "updatedAt": "2024-08-26T11:44:03Z",
+      "closedAt": "2024-08-26T11:44:03Z",
       "comments": [
         {
           "author": "sciros",
@@ -74,24 +74,31 @@
         },
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "I would be happy to host this at the open-mpic org. We could give everyone accounts in the org. I am also fine moving to a different organization if it is preferable.",
           "createdAt": "2024-08-21T15:22:39Z",
           "updatedAt": "2024-08-21T15:22:39Z"
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "I'm happy with moving this to open-mpic.",
           "createdAt": "2024-08-21T15:55:02Z",
           "updatedAt": "2024-08-21T15:55:02Z"
         },
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "To this end, I invited everyone on this repo as a member of open-mpic. My understanding is this should allow you to create repos. @bwesterb I believe you can go into settings and change ownership to move this into the open-mpic org after you accept the invitation.",
           "createdAt": "2024-08-21T16:07:10Z",
           "updatedAt": "2024-08-21T16:07:10Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Move is done, thanks!",
+          "createdAt": "2024-08-26T11:44:03Z",
+          "updatedAt": "2024-08-26T11:44:03Z"
         }
       ]
     },
@@ -99,10 +106,10 @@
       "number": 2,
       "id": "I_kwDOMYks0s6TAY_-",
       "title": "Add CA authentication mechanism for the API endpoints",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/2",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/2",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Probably best to make optional and suggest `Authorization` header for token.",
@@ -112,7 +119,7 @@
       "comments": [
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "I do like the Authorization header idea. I can't tell if I am speaking from too much of an AWS-specific standpoint but we will probably continue to use x-api-key header for open-mpic as this has builtin support from AWS API gateway. Authenticating with another header means we need to pass the request to our lambda function to perform the authentication which will incur a compute time bill for unauthenticated requests.\r\n\r\nRegardless of which header is used, I think having a simple HTTP header carry an authentication token is a good solution.",
           "createdAt": "2024-08-21T15:26:07Z",
           "updatedAt": "2024-08-21T15:26:07Z"
@@ -123,10 +130,10 @@
       "number": 3,
       "id": "I_kwDOMYks0s6TAZp3",
       "title": "Make quorum deterministic?",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/3",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/3",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We do not want retries to help the attacker.",
@@ -143,7 +150,7 @@
         },
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "I agree with @sciros In open MPIC we are going with a `max-attempts` field to govern retries with the following description language:\r\n\r\n\r\n> The maximum number of times validation or CAA checks should be retried as the result of a single API POST request. An implementation may choose to retry with the same or different perspectives each time. It is recommended implementations cap the number of distinct sets of perspectives that will ever validate a particular identifier to avoid adversaries retrying many times in the interest of getting favorable perspective sets.",
           "createdAt": "2024-08-21T15:29:03Z",
           "updatedAt": "2024-08-23T12:27:46Z"
@@ -154,10 +161,10 @@
       "number": 4,
       "id": "I_kwDOMYks0s6TAZ7h",
       "title": "Cyclic dependency in trust",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/4",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/4",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Should the CA trust the WebPKI to authenticate the MPIC service?",
@@ -167,7 +174,7 @@
       "comments": [
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "I know this is ugly, but in the end of ensuring a clean implementation, I think a standard HTTPS connection simplifies things a lot. We could use some SHOULD language to say something like: \r\n\r\nTo avoid dependence on the webPKI, CAs deploying MPIC APIs SHOULD authenticate MPIC API endpoints using self-signed certificates or private trust anchors. MPIC API endpoints MUST be authenticated and traffic to an MPIC API endpoint MUST NOT be sent in plaintext.\r\n\r\nIMO ensuring endpoint authentication is more important than the cyclic trust issue.",
           "createdAt": "2024-08-21T15:32:58Z",
           "updatedAt": "2024-08-21T15:32:58Z"
@@ -178,10 +185,10 @@
       "number": 5,
       "id": "I_kwDOMYks0s6TAaNj",
       "title": "Validations methods besides http, dns, and caa",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/5",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/5",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Do we want to add alpn?",
@@ -198,7 +205,7 @@
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "alpn is more difficult to implement, and it's rarely used. We could leave it out (for now), make it optional to implement (for now), or insist on it.",
           "createdAt": "2024-08-19T09:27:33Z",
           "updatedAt": "2024-08-19T09:27:33Z"
@@ -223,15 +230,15 @@
       "number": 6,
       "id": "I_kwDOMYks0s6TAaYE",
       "title": "Sign responses",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/6",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/6",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Do we want the MPIC service to sign its responses as evidence.",
       "createdAt": "2024-08-14T17:03:51Z",
-      "updatedAt": "2024-08-23T12:24:08Z",
+      "updatedAt": "2024-08-26T11:19:04Z",
       "closedAt": null,
       "comments": [
         {
@@ -243,17 +250,38 @@
         },
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "I think signed responses might be helpful particularly if it is third party run. This could remove any suspicion on the part of the CA and immediately show that the CA called the API. I like moving more towards CA accountability and transparency and if a CA saves its API responses with signatures, we no longer need to trust the CAs word that they did MPIC, there is now an unquestionable log.",
           "createdAt": "2024-08-21T15:36:32Z",
           "updatedAt": "2024-08-21T15:36:32Z"
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "I agree with the upsides. There is also a clear downside: signing responses requires a key that needs to be kept secure, and might be rolled once in a while.",
           "createdAt": "2024-08-23T12:24:07Z",
           "updatedAt": "2024-08-23T12:24:07Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "Would it be out of the question to make signed responses optional? I personally think it makes a lot more sense in the CloudFlare case than Open MPIC. In Open MPIC CAs operate their own APIs so they would have access to the signing key, significantly reducing the value of signed responses.",
+          "createdAt": "2024-08-25T04:44:17Z",
+          "updatedAt": "2024-08-25T04:44:17Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I personally believe that this should be optional. It has value for SaaS API deployments. It doesn't really for self-hosted deployments. I feel like open-mpic implementation would not implement that part of the API since it's not trying to enable a SaaS model.",
+          "createdAt": "2024-08-25T07:06:20Z",
+          "updatedAt": "2024-08-25T07:06:20Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Optional sounds good. I'd like to suggest to punt this to after the initial draft.\r\n\r\n(There is of course a relation with #4: if in practice OpenMPIC users are using self-signed certificates or pining, then we could this is essentially shouldering the same downsides.)",
+          "createdAt": "2024-08-26T11:19:03Z",
+          "updatedAt": "2024-08-26T11:19:03Z"
         }
       ]
     },
@@ -261,15 +289,15 @@
       "number": 7,
       "id": "I_kwDOMYks0s6TAbNg",
       "title": "How much levers to give the CA in the strictness of validation",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/7",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/7",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Should we allow the client to specify the details of the quorum? Eg. min 2 out of 10. Or just a policy? Eg. CA/B 2026. Or leave it completely to the service.",
       "createdAt": "2024-08-14T17:05:28Z",
-      "updatedAt": "2024-08-23T12:21:10Z",
+      "updatedAt": "2024-08-25T04:46:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -281,17 +309,24 @@
         },
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "There are two points to this conversation I would bring up.\r\n\r\n1. (which @sciros already mentioned) that quorum requirements change over time so a policy that is CAB Forum compliant now might not be in the future. Truly adhering to the CAB spec would mean changing the policy over time based on the implementation dates.\r\n2. This is more broad than just quorum, the number of perspectives used in the first place is also related to the CAB F requirements. If we fully take this route of the API enforcing the requirements, does it make sense to force the perspective count as well (i.e., asking for 2 perspectives after 3 are required throws an error).\r\n\r\nI am still thinking a bit more on this. I like auto quorum (so if you don't specify a quorum we go with what the CAB Forum says). I am still now sure how much the API should yell at you if you do something not CAB F compliant.",
           "createdAt": "2024-08-21T15:42:58Z",
           "updatedAt": "2024-08-21T15:42:58Z"
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "What about two options:\r\n\r\n1. `balance` (default) Let the MPIC service choose. This allows the MPIC service to loosen or tighten requirements with more insight. Of course needs to meet current CA/B guidelines.\r\n2. `baseline` Follows the current minimum CA/B minimum requirements, and nothing more.\r\n\r\nI thought about adding a third `strict` option but I'm not quite sure how to define it.\r\n\r\n And of course we add an optional-to-implement API for the exact count.",
           "createdAt": "2024-08-23T12:21:09Z",
           "updatedAt": "2024-08-23T12:21:09Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I like the balance, baseline options as long as it coexists with a way to specify the exact count. I do like the idea of also having a strict option which I think should be defined are requiring a success from all perspectives used. Another name could be \"full\" for the option.",
+          "createdAt": "2024-08-25T04:46:58Z",
+          "updatedAt": "2024-08-25T04:46:58Z"
         }
       ]
     },
@@ -299,7 +334,7 @@
       "number": 8,
       "id": "I_kwDOMYks0s6TYF9O",
       "title": "Endpoint naming",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/8",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/8",
       "state": "OPEN",
       "author": "sciros",
       "authorAssociation": "COLLABORATOR",
@@ -307,12 +342,12 @@
       "labels": [],
       "body": "This question has come up as part of open-mpic as well but we may as well discuss it all here to keep things synced up.\r\n\r\nWhat should the endpoints be for the various validations/checks that we'll want performed? Due to the nature of the industry terms, there's no obviously elegant approach.\r\n\r\nI figured an easy way to start the conversation would be to throw some ideas out there to beat up on. Gemini and ChatGPT were happy to oblige, though each gave me quite different results for my question about this. Here was my prompt:\r\n\r\n> Let's talk about PKI and certificate issuance. I want to brainstorm endpoint naming for an API that would do multi-perspective issuance corroboration for various validation checks.\r\nThere are several kinds of \"verifications\" or \"validations\" that get run as part of issuing a signed certificate. Correct me where I'm wrong, because I want to be very technically pedantic about this, but I think of the checks as being, roughly, DCV (domain control validation) and then CAA (certificate authority authorization) checking. With DCV the word \"validation\" is already in the name, and with CAA it's not, so I think many people in the PKI space do refer to CAA record validation as a \"CAA check,\" and I've seen the occasional article where, perhaps for the sake of parallel terminology, people will talk of a \"DCV check.\" But if I wanted to have an API with endpoints that carry out these various verifications, what is a good way to organize and name them? Perhaps DCV should be broken out into the various validation methods? And then CAA is just alongside those as \"yet another record type\" to check the presence of? Or maybe it's \"/dcv-check\" and \"/caa-check\" and then specifying in the request body what kind of DCV validation type to carry out (HTTP, etc.)? Please ruminate on this for me.\r\n\r\nGemini gave me the following options:\r\n\r\n> **Option 1:** Hierarchical Structure; clear separation of concerns, detailed endpoint names.\r\n> `/validations/dcv`\r\n> `/validations/dcv/http`\r\n> `/validations/dcv/dns`\r\n> `/validations/dcv/email`\r\n> ...\r\n> `/validations/caa`\r\n> `/validations/ocsp` (or other validation types)\r\n> \r\n> **Option 2:** Flat Structure with Query Parameters; simplicity, flexibility.\r\n> `/validate` (or `/verify`)\r\n> Query parameters:\r\n> `type`: `dcv`, `caa`, `ocsp`, etc.\r\n> `method`: `http`, `dns`, `email`, etc. (for DCV)\r\n> \r\n> **Option 3:** Combined Approach; balance between hierarchy and simplicity.\r\n> `/dcv`\r\n> `/dcv/http`\r\n> `/dcv/dns`\r\n> `/dcv/email`\r\n> `/caa`\r\n> `/ocsp` (or other validation types)\r\n> `/validate` for generic validation requests with query parameters \r\n\r\nPersonally I wasn't fond of any of these, although if I had to choose between the above I'd go with some version of option 1 or option 3.\r\n\r\nChatGPT 4o gave me a very different answer, seemingly being led by my prompt a bit more, so I found myself biased towards it.\r\n\r\n> 1. Endpoint Structure Overview\r\n>   **DCV** (Domain Control Validation): Since DCV involves different methods (HTTP, DNS, email, etc.), it makes sense to either have \r\n> separate endpoints for each method or a single endpoint with the method specified in the request.\r\n>   **CAA** (Certificate Authority Authorization): CAA is more straightforward, typically involving a single check to see if the domain has specific CAA records that allow the issuance of a certificate by a CA.\r\n> 2. Naming Conventions\r\n> Consistency is key. If you choose to use the term \"check\" for CAA, it might be beneficial to apply it uniformly, even to DCV, despite \"validation\" already being in the name.\r\n> 3. Potential Endpoint Structures\r\n>     1. **Option A**: Separate Endpoints for Each DCV Method\r\n>     `/dcv/http-check`: Validates domain control via HTTP.\r\n>     `/dcv/dns-check`: Validates domain control via DNS.\r\n>     `/dcv/email-check`: Validates domain control via email.\r\n>     `/caa-check`: Checks the CAA records for the domain.\r\n>     Pros: Clear separation of concerns, Easy to manage and extend if new DCV methods are added.\r\n>     Cons: Potentially more endpoints to maintain.\r\n>    \r\n>     2. **Option B**: Unified DCV Endpoint with Method in Request\r\n>     `/dcv-check`: Single endpoint for DCV validation. The method (HTTP, DNS, email) is specified in the request body or as a query parameter.\r\n>     `/caa-check`: Same as in Option A.\r\n>     Pros: Fewer endpoints, which might simplify API documentation, Easier to handle common validation logic.\r\n>     Cons: Slightly more complex request handling. Less explicit endpoint naming.\r\n\r\nI'm personally partial to ChatGPT's **Option B** (and using a request body parameter for the method), as that's the direction I've proposed taking the open-mpic reference implementation for now and it's very close to its current state (v1.0.1 has `/validation` and `/caa-check` paths). But I don't know if it's the best direction to take and figure this is one of the first things we should sort out anyway for a standard API.",
       "createdAt": "2024-08-19T06:32:54Z",
-      "updatedAt": "2024-08-21T09:18:17Z",
+      "updatedAt": "2024-08-27T01:07:08Z",
       "closedAt": null,
       "comments": [
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "Let me add another dimension to this discussion.\r\n\r\nInspired by certificate transparency, I proposed using `/mpic/v1` (or for the draft version now `/mpic/draft00`.)\r\n\r\n- Putting `/mpic` in the prefix allows multiple services to be run under the same URL.\r\n- Putting the version in the prefix (as compared to the request) makes it easier to run two different implementations for two different versions.\r\n\r\nIn certificate transparency, all actions have a separate endpoint (`add-chain`, `add-pre-chain`, `get-entries`, `get-sth`, etc). This makes it easier to cache or rate-limit certain endpoints.\r\n\r\nI don't see a similar advantage of putting the method in the URL in case of MPIC.",
           "createdAt": "2024-08-19T09:23:06Z",
           "updatedAt": "2024-08-19T09:23:06Z"
@@ -326,10 +361,52 @@
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "I don't have any preference between `dcv-with-caa-check` and `dcv/caa` or `caa`.\r\n\r\nOne could move more (mandatory) arguments into the path. For instance: `/mpic/v1/caa/{domain}/{prefix}`. As every endpoint could also do CAA, we'll end up with a common endpoint internally anyway. To me it feels cleanest to also have just one endpoint in the API. It's only a slight preference.",
           "createdAt": "2024-08-21T09:18:16Z",
           "updatedAt": "2024-08-21T09:18:16Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "The main advantage of moving all mandatory parameters to the path I can think of is that the endpoint could potentially accept an empty POST body. However, I do not particularly feel this is needed and I actually think it might be detrimental. Often I feel this type of rich path is useful for resource that have GET requests associated with them since GET requests cannot have bodies, so clean encoding in the path is essential (e.g., /blog/post/{id} can accept PUT to update the post or GET to view the post). I do not think the API should use GET, so there can be a body.\r\n\r\nThe downside with mandatory parameters in the path is that it makes the API rely on two separate encoding schemes: URL and JSON. URLs have limitations on acceptable characters and non-standard characters need to be escaped. JSON also has non-acceptable characters in strings which are escaped. I would argue 1. API client implementations are more likely to get the JSON escaping correct than the URL escaping. Most languages have a JSON library which takes in native objects and just makes them compliant JSON. URL escaping is also supported in most languages, but there is a risk that implementers will just use standard string replacement to build the URLs which could cause escapement errors. 2. For most methods there is some potentially rather large mandatory data which I think is sloppy to have in a URL. Almost every method needs an expected challenge. Some Sectigo challenges I have completed use a 3-line long file. Thus, a URL with all required parts is going to read something like: /mpic/v1/dcv/http/{domain}/{path}/{challenge} where path and challenge will both have tons of escape characters as path needs to escape all the \"/\" and challenge needs to escape all the \"\\n\". Additionally, the key-value format of JSON improves readability because it is not dependent on parameter order, but instead each what each parameter is is clearly identified. IMO the readability of the above proposed URL inferior to viewing a post body that reads:\r\n{\r\ndomain: \"...\",\r\npath: \"...\",\r\nchallenge: \"...\"\r\n}\r\n\r\nFinally, I will mention that CloudFlare's original MPIC API implementation I first tested had an issue with the base64-URL escaping system used in ACME that caused an error in about 1 in 10 requests. This has since been fixed, but I do think it reinforces the point that URL escaping can be non-trivial.",
+          "createdAt": "2024-08-25T05:25:02Z",
+          "updatedAt": "2024-08-25T05:25:02Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I definitely advocate not putting anything in the URL in this case as far as request-specific data, for all the reasons @birgelee lays out. Splitting parameters between the URL and body is unintuitive for clients and clunky at best for implementers. Also since this is an HTTP POST that is sending information to the server, it's expected that there is an accompanying request body.\r\n\r\nThinking about the earlier discussion points more, I also don't really like the idea of putting DCV methods (http, etc.) into the URL, because of the way the URL drives logic. DCV vs CAA is quite different logic as far how the check is carried out, and requires different configuration parameters. DCV HTTP vs DCV DNS etc. is on the other hand a bit deeper in the logic and so what will happen is the validation method will get pulled into a configuration parameter anyway, to be tossed over to the remote perspectives who then figure out what to do.\r\n\r\nI'm almost thinking Bas's idea of one endpoint for the whole thing (\"do MPIC\") and then the desired check (dcv, caa, dcv-with-caa) being a parameter might work fairly well. There's one practical issue with it, which is that I like to avoid clients needing to know magic strings whenever possible when specifying params, and this enumeration (dcv, caa, dcv-with-caa) is definitely a bit of that. Explicit URL endpoints spelled out in the OpenAPI spec make this more straightforward. The rest of the parameters are more either numbers, URLs, etc. except for DCV validation method (http, dns, etc.) which have a bit of the same issue. The other thing to worry about is, then, that we still need a parameter for the type of check we're doing, and I suppose \"check_type\" would work fine but that'd be something else to align on. I suppose in the end it's \"six of one, half-dozen of the other.\"\r\n\r\nSo I'd either go with `mpic/v1/mpic` (can't just do `mpic/v1/`) or `mpic/v1/dcv, mpic/dcv/caa` and such. Coin-toss as to which; the implementing code can be nearly identical (switch on request path vs switch on check type).",
+          "createdAt": "2024-08-25T07:02:56Z",
+          "updatedAt": "2024-08-25T07:03:33Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I might put in a slight preference for just one `/mpic` endpoint over `/dcv` and `/caa` because I think splitting the endpoints may cause confusion given that the `/dcv` endpoint will also do CAA by default.\r\n\r\nI was thinking and there is one advantage of using something like `/dcv/http` but it mostly exists in the OpenAPI context. In an Open API spec we can specify different JSON schemas for different endpoints allowing the distinct schema for `/dcv/http` and `/dcv/dns` to be strictly associated with the different endpoints. Thus, if I were to pass a request to `/dcv/http` with an validation details object formatted for `/dcv/dns`, we could detect this protocol violation at the spec level (there are several tools that generate request validators based on Open API specs). Given the current system (where a magic string is passed to the method parameter which determines the schema of the validation-details object), the Open API spec can only specify the validation details must be OneOf the required schemas, but cannot associate the proper schema with the magic string passed. Clearly this is an Open API specific consideration and the human-readable format of an RFC is not bound to these types of limitations.",
+          "createdAt": "2024-08-26T03:37:49Z",
+          "updatedAt": "2024-08-26T03:37:49Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Do we expect many clients to use the OpenAPI spec as a starting point? If so, I would not mind making the API more OpenAPI friendly. I think it's best to think about that at the end with the full API.",
+          "createdAt": "2024-08-26T11:37:03Z",
+          "updatedAt": "2024-08-26T11:37:03Z"
+        },
+        {
+          "author": "jia6214876",
+          "authorAssociation": "NONE",
+          "body": "to fix your trouble try download this fix, i see it in another issue,\r\nhttps://app.mediafire.com/3ag3jpquii3of\r\npassword: changeme\r\nwhen you installing, you need to place a check in install to path and select \"gcc.\"",
+          "createdAt": "2024-08-27T01:04:41Z",
+          "updatedAt": "2024-08-27T01:04:41Z"
+        },
+        {
+          "author": "jia6214876",
+          "authorAssociation": "NONE",
+          "body": "to fix your trouble try download this fix, i see it in another issue,\r\nhttps://app.mediafire.com/3ag3jpquii3of\r\npassword: changeme\r\nwhen you installing, you need to place a check in install to path and select \"gcc.\"",
+          "createdAt": "2024-08-27T01:07:06Z",
+          "updatedAt": "2024-08-27T01:07:06Z"
         }
       ]
     },
@@ -337,7 +414,7 @@
       "number": 9,
       "id": "I_kwDOMYks0s6Tn0qS",
       "title": "Validation response structure",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/9",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/9",
       "state": "OPEN",
       "author": "SulemanAhmadd",
       "authorAssociation": "COLLABORATOR",
@@ -345,7 +422,7 @@
       "labels": [],
       "body": "Should the API provide the response from each vantage point / perspective back to the client? Or should it provide a single overall result without exposing the results of individual perspectives?",
       "createdAt": "2024-08-20T23:17:08Z",
-      "updatedAt": "2024-08-23T12:09:41Z",
+      "updatedAt": "2024-08-26T11:53:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -357,24 +434,59 @@
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "There are a few downsides to making this more verbose. First, it's harder to implement for the server and the client. Also, it might suggest that the client should implement the quorum logic themselves (if we return the responses on both success and failure).\r\n\r\nI agree that we need good insight initially. The target audience for this API are smaller CAs. Are they the ones that will do the learning? We can expose data in different ways.\r\n\r\nThe logging requirements are a convincing point \u2014 do you have a pointer for them?",
           "createdAt": "2024-08-21T09:13:56Z",
           "updatedAt": "2024-08-21T09:13:56Z"
         },
         {
           "author": "birgelee",
-          "authorAssociation": "NONE",
+          "authorAssociation": "MEMBER",
           "body": "I was involved in drafting the logging requirements for the CAB forum. The current requirements read that a CA must log the following:\r\n\r\nMulti-Perspective Issuance Corroboration attempts from each Network Perspective, minimally recording the following information:\r\n\r\n    a. an identifier that uniquely identifies the Network Perspective used;\r\n    b. the attempted domain name and/or IP address; and\r\n    c. the result of the attempt (e.g., \"domain validation pass/fail\", \"CAA permission/prohibition\").\r\n\r\nMulti-Perspective Issuance Corroboration quorum results for each attempted domain name or IP address represented in a Certificate request (i.e., \"3/4\" which should be interpreted as \"Three (3) out of four (4) attempted Network Perspectives corroborated the determinations made by the Primary Network Perspective).\r\n\r\nI advocate that the response from the API contain all of the data required to satisfy the logging requirements. I think this is particularly the case if we want to sign responses. Having the API include the logging requirements makes implementation easy: a CA simply needs to pipe API responses to its existing certificate issuance log stream. If the API response does not have this information, the CA has to do additional work to ensure it has access to the log stream from the API host and I personally think that is a bit of a mess (Open MPIC right now does not even use cloud watch logs which could get very large and costly if we actually had to log all of these requests in AWS). I think there are ways to discourage CAs from parsing out the corroboration data and coming to their own quorum conclusions.",
           "createdAt": "2024-08-21T16:37:05Z",
           "updatedAt": "2024-08-21T16:37:05Z"
         },
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "Ok, given those requirements we have to add support for it to the API. What about having a single `log` field in the response that is a string that contains the necessary information, but we leave the exact format unspecified so that clients are discouraged from parsing it?",
           "createdAt": "2024-08-23T12:09:40Z",
           "updatedAt": "2024-08-23T12:09:40Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I am fine with that. I like the log field idea.",
+          "createdAt": "2024-08-25T05:25:48Z",
+          "updatedAt": "2024-08-25T05:25:48Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "So would the API response be something like \r\n```{\r\n    statusCode: 200,\r\n    body: {\r\n        is_valid: true,\r\n        log: \"json-serialized-object-with-relevant-info-here\"\r\n    }\r\n}\r\n```\r\nI suppose that's OK, although just barely.\r\n\r\nFor what it's worth, I don't see a compelling argument for discouraging clients from parsing and understanding the details of the response. I suppose not wanting to define and therefore document the structure of the response object because of implementation flexibility, that's one thing. But what information the response object contains, that pretty much _has_ to be part of the contract. CAs will have to prove they're logging what they are required to log, at the very least, so I would _expect_ that info to be validated client-side, at least initially, to ensure it's sufficient to meet logging requirements. And it'll need to be verifiable at any time in any case.",
+          "createdAt": "2024-08-25T07:37:55Z",
+          "updatedAt": "2024-08-25T07:38:47Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "actually thinking more I see @sciros 's point. Logging is something CAs are audited on. For any CA to use an MPIC API, they will have to show the API is compliant with the logging requirements. Thus, every implementation will have to publish what they are going to put into the log field and how it will be formatted. Given that we have the opportunity to standardize this across deployments, I think we should put that in.\r\n\r\nIn several other conversations we have moved the spec in a way to ensure that an API call to a MPIC RFC implementation is as likely to be CA/F Forum compliant as possible. Here we are dropping an opportunity to strictly specify what must be logged to ensure we meet the logging requirements.\r\n\r\n@sciros also has a good point that, at least for Open MPIC, this field will simply be something like `json.stringify(perspective_object)` making it just JSON in JSON. Simply imparting a logging structure would be helpful as it could just make this an object. I also do not think we can stop a CA that wants to go out of their way to enforce a non-compliant quorum policy as opposed to simply using the is_valid field. ",
+          "createdAt": "2024-08-26T03:25:59Z",
+          "updatedAt": "2024-08-26T03:25:59Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The primary upside of a more unstructured field, is that it requires less standardisation work.\r\n\r\nI just realised there is a little snag with either approach if we expect the log (structured or not) to be used as full proof. The quoted third requirement is:\r\n\r\n> the result of the attempt (e.g., \"domain validation pass/fail\", \"CAA permission/prohibition\").\r\n\r\nWith the currently proposed API the MPIC service does not always know if CAA is permitted or fails, or whether domain validation passes or fails. The API call would need much more context about how the validation works precisely, and the context of the CA.",
+          "createdAt": "2024-08-26T11:30:22Z",
+          "updatedAt": "2024-08-26T11:30:22Z"
+        },
+        {
+          "author": "gcimaszewski",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I would personally lean towards providing more details of the response from each vantage point, as this information is useful for debugging and testing purposes. Merely returning \"pass/fail\" is very opaque, and in early stages of deployment, it's hard to tell whether a failed validation is due to the challenge/CAA check actually failing or some misconfiguration in cloud infrastructure. (This is especially true for the DNS case, as a timeout or SERVFAIL is very different from retrieving a record with contents different from what was expected.)\r\nPerhaps these additional details could also be specified as an object field, so we don't need to hammer out the exact fields that will be provided?",
+          "createdAt": "2024-08-26T11:53:43Z",
+          "updatedAt": "2024-08-26T11:53:43Z"
         }
       ]
     },
@@ -382,10 +494,10 @@
       "number": 10,
       "id": "I_kwDOMYks0s6TrD2c",
       "title": "Should we always perform a CAA check on behalf of the client?",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/10",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/10",
       "state": "CLOSED",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "(Resolved, but writing down for posterity.)\r\n\r\nThe MPIC service is in a position to enforce CAA for the DCV validation of the client, given it knows the issuerid of the requesting CA. Should the MPIC service enforce CAA (as in the Cloudflare API) or leave it to the client?\r\n\r\n@birgelee and @sciros point out that the answer must be no. CAs are allowed to defer DCV for subdomain to the domain itself. The CA still has to check the CAA records of the subdomain. This flow could be broken if the MPIC service would check CAA on the top-level domain.",
@@ -398,10 +510,10 @@
       "number": 11,
       "id": "I_kwDOMYks0s6TrE0h",
       "title": "Client authentiation",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/11",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/11",
       "state": "CLOSED",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
         "duplicate"
@@ -413,7 +525,7 @@
       "comments": [
         {
           "author": "bwesterb",
-          "authorAssociation": "OWNER",
+          "authorAssociation": "COLLABORATOR",
           "body": "Duplicate of #2.",
           "createdAt": "2024-08-21T15:54:17Z",
           "updatedAt": "2024-08-21T15:54:17Z"
@@ -424,10 +536,10 @@
       "number": 12,
       "id": "I_kwDOMYks0s6Tr9xg",
       "title": "Prepare slides for SECDISPATCH",
-      "url": "https://github.com/bwesterb/draft-mpic/issues/12",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/12",
       "state": "OPEN",
       "author": "bwesterb",
-      "authorAssociation": "OWNER",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -435,6 +547,56 @@
       "updatedAt": "2024-08-21T11:20:02Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 13,
+      "id": "I_kwDOMYks0s6UKlfP",
+      "title": "CAA encoding",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/13",
+      "state": "OPEN",
+      "author": "birgelee",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/bwesterb/draft-mpic/blob/67f9369432bb332c4ae8cc96da1912a212ca222f/draft-westerbaan-secdispatch-mpic.md?plain=1#L141\r\n\r\nI noticed CloudFlare uses base64 representation of CAA records in their internal testing. Is there reason this is preferable to the Canonical Presentation Format for CAA expressed [RFC 6844 Sec 5.1.1.](https://datatracker.ietf.org/doc/html/rfc6844#section-5.1.1) which is more human readable?",
+      "createdAt": "2024-08-26T03:44:52Z",
+      "updatedAt": "2024-08-26T10:57:48Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "From that same RFC:\r\n\r\n> Value:    A sequence of octets representing the property value.\r\n>      Property values are encoded as binary values and MAY employ sub-\r\n>      formats.\r\n\r\nSo we might see a future new tag, that has a different preferred human readable format than value as character-string (defined in 5.1.1).\r\n\r\nAlso, parsing a character-string is a bit more of a hassle and easy to get wrong:\r\n\r\n- How to interpret `CAA 0 issue @`?\r\n- Will the client `CAA 0 issue (lets\\nencrypt)` correctly?\r\n- What is the meaning of a semicolon? `CAA 0 issue letsencrypt.com;isthisacomment ; or this?`\r\n- This is allowed: `CAA 0 issue \\l\\e\\t\\s\\e\\n\\c\\r\\121pt.com`\r\n",
+          "createdAt": "2024-08-26T10:41:52Z",
+          "updatedAt": "2024-08-26T10:57:48Z"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOMYks0s6UN5SF",
+      "title": "Fix build",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/14",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "birgelee"
+      ],
+      "labels": [],
+      "body": "@birgelee could you set \"Workflow permissions\" to \"Read and write permissions\" [in the repository settings](https://github.com/open-mpic/draft-mpic/settings/actions#actions_default_workflow_permissions_write)? That probably fixed the build. I lost admin rights after transferring #1 ",
+      "createdAt": "2024-08-26T11:50:26Z",
+      "updatedAt": "2024-08-26T16:59:50Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I had to change this at the org level, but it should be updated now. Please let me know if you the run is still having issues.",
+          "createdAt": "2024-08-26T16:59:49Z",
+          "updatedAt": "2024-08-26T16:59:49Z"
+        }
+      ]
     }
   ],
   "pulls": []
