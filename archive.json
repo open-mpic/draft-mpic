@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-27T01:17:09.655877+00:00",
+  "timestamp": "2024-08-29T01:18:25.262977+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -114,7 +114,7 @@
       "labels": [],
       "body": "Probably best to make optional and suggest `Authorization` header for token.",
       "createdAt": "2024-08-14T17:00:26Z",
-      "updatedAt": "2024-08-21T15:26:08Z",
+      "updatedAt": "2024-08-28T23:38:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -123,6 +123,13 @@
           "body": "I do like the Authorization header idea. I can't tell if I am speaking from too much of an AWS-specific standpoint but we will probably continue to use x-api-key header for open-mpic as this has builtin support from AWS API gateway. Authenticating with another header means we need to pass the request to our lambda function to perform the authentication which will incur a compute time bill for unauthenticated requests.\r\n\r\nRegardless of which header is used, I think having a simple HTTP header carry an authentication token is a good solution.",
           "createdAt": "2024-08-21T15:26:07Z",
           "updatedAt": "2024-08-21T15:26:07Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What exactly are we planning to achieve with optional client authentication? If we dont plan to make it a requirement then its best to leave it out of the standard. Individual deployments can carry out their own authentication, as needed.\r\n\r\nWe can mention a recommendation in considerations though using `Authorization` request header.",
+          "createdAt": "2024-08-28T23:38:25Z",
+          "updatedAt": "2024-08-28T23:38:25Z"
         }
       ]
     },
@@ -138,7 +145,7 @@
       "labels": [],
       "body": "We do not want retries to help the attacker.",
       "createdAt": "2024-08-14T17:01:58Z",
-      "updatedAt": "2024-08-23T12:27:46Z",
+      "updatedAt": "2024-08-29T00:28:06Z",
       "closedAt": null,
       "comments": [
         {
@@ -154,6 +161,13 @@
           "body": "I agree with @sciros In open MPIC we are going with a `max-attempts` field to govern retries with the following description language:\r\n\r\n\r\n> The maximum number of times validation or CAA checks should be retried as the result of a single API POST request. An implementation may choose to retry with the same or different perspectives each time. It is recommended implementations cap the number of distinct sets of perspectives that will ever validate a particular identifier to avoid adversaries retrying many times in the interest of getting favorable perspective sets.",
           "createdAt": "2024-08-21T15:29:03Z",
           "updatedAt": "2024-08-23T12:27:46Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I believe details about max number of retries is an implementation specific characteristic, not something that the standard should define.\r\n\r\nI am not sure if the client will have the right knowledge or confidence to determine if they should go with the same set of perspective or different on retries when given the option. I am leaning towards keeping it deterministic (the client should not have to deal with it) to prevent an adversary creating a false quorum, while maintaining simplicity in design. \r\n\r\nA retry by nature means re-doing the _same_ work. I suspect CAs in the future might be relying on multiple MPIC services anyways.",
+          "createdAt": "2024-08-29T00:28:05Z",
+          "updatedAt": "2024-08-29T00:28:05Z"
         }
       ]
     },
@@ -342,7 +356,7 @@
       "labels": [],
       "body": "This question has come up as part of open-mpic as well but we may as well discuss it all here to keep things synced up.\r\n\r\nWhat should the endpoints be for the various validations/checks that we'll want performed? Due to the nature of the industry terms, there's no obviously elegant approach.\r\n\r\nI figured an easy way to start the conversation would be to throw some ideas out there to beat up on. Gemini and ChatGPT were happy to oblige, though each gave me quite different results for my question about this. Here was my prompt:\r\n\r\n> Let's talk about PKI and certificate issuance. I want to brainstorm endpoint naming for an API that would do multi-perspective issuance corroboration for various validation checks.\r\nThere are several kinds of \"verifications\" or \"validations\" that get run as part of issuing a signed certificate. Correct me where I'm wrong, because I want to be very technically pedantic about this, but I think of the checks as being, roughly, DCV (domain control validation) and then CAA (certificate authority authorization) checking. With DCV the word \"validation\" is already in the name, and with CAA it's not, so I think many people in the PKI space do refer to CAA record validation as a \"CAA check,\" and I've seen the occasional article where, perhaps for the sake of parallel terminology, people will talk of a \"DCV check.\" But if I wanted to have an API with endpoints that carry out these various verifications, what is a good way to organize and name them? Perhaps DCV should be broken out into the various validation methods? And then CAA is just alongside those as \"yet another record type\" to check the presence of? Or maybe it's \"/dcv-check\" and \"/caa-check\" and then specifying in the request body what kind of DCV validation type to carry out (HTTP, etc.)? Please ruminate on this for me.\r\n\r\nGemini gave me the following options:\r\n\r\n> **Option 1:** Hierarchical Structure; clear separation of concerns, detailed endpoint names.\r\n> `/validations/dcv`\r\n> `/validations/dcv/http`\r\n> `/validations/dcv/dns`\r\n> `/validations/dcv/email`\r\n> ...\r\n> `/validations/caa`\r\n> `/validations/ocsp` (or other validation types)\r\n> \r\n> **Option 2:** Flat Structure with Query Parameters; simplicity, flexibility.\r\n> `/validate` (or `/verify`)\r\n> Query parameters:\r\n> `type`: `dcv`, `caa`, `ocsp`, etc.\r\n> `method`: `http`, `dns`, `email`, etc. (for DCV)\r\n> \r\n> **Option 3:** Combined Approach; balance between hierarchy and simplicity.\r\n> `/dcv`\r\n> `/dcv/http`\r\n> `/dcv/dns`\r\n> `/dcv/email`\r\n> `/caa`\r\n> `/ocsp` (or other validation types)\r\n> `/validate` for generic validation requests with query parameters \r\n\r\nPersonally I wasn't fond of any of these, although if I had to choose between the above I'd go with some version of option 1 or option 3.\r\n\r\nChatGPT 4o gave me a very different answer, seemingly being led by my prompt a bit more, so I found myself biased towards it.\r\n\r\n> 1. Endpoint Structure Overview\r\n>   **DCV** (Domain Control Validation): Since DCV involves different methods (HTTP, DNS, email, etc.), it makes sense to either have \r\n> separate endpoints for each method or a single endpoint with the method specified in the request.\r\n>   **CAA** (Certificate Authority Authorization): CAA is more straightforward, typically involving a single check to see if the domain has specific CAA records that allow the issuance of a certificate by a CA.\r\n> 2. Naming Conventions\r\n> Consistency is key. If you choose to use the term \"check\" for CAA, it might be beneficial to apply it uniformly, even to DCV, despite \"validation\" already being in the name.\r\n> 3. Potential Endpoint Structures\r\n>     1. **Option A**: Separate Endpoints for Each DCV Method\r\n>     `/dcv/http-check`: Validates domain control via HTTP.\r\n>     `/dcv/dns-check`: Validates domain control via DNS.\r\n>     `/dcv/email-check`: Validates domain control via email.\r\n>     `/caa-check`: Checks the CAA records for the domain.\r\n>     Pros: Clear separation of concerns, Easy to manage and extend if new DCV methods are added.\r\n>     Cons: Potentially more endpoints to maintain.\r\n>    \r\n>     2. **Option B**: Unified DCV Endpoint with Method in Request\r\n>     `/dcv-check`: Single endpoint for DCV validation. The method (HTTP, DNS, email) is specified in the request body or as a query parameter.\r\n>     `/caa-check`: Same as in Option A.\r\n>     Pros: Fewer endpoints, which might simplify API documentation, Easier to handle common validation logic.\r\n>     Cons: Slightly more complex request handling. Less explicit endpoint naming.\r\n\r\nI'm personally partial to ChatGPT's **Option B** (and using a request body parameter for the method), as that's the direction I've proposed taking the open-mpic reference implementation for now and it's very close to its current state (v1.0.1 has `/validation` and `/caa-check` paths). But I don't know if it's the best direction to take and figure this is one of the first things we should sort out anyway for a standard API.",
       "createdAt": "2024-08-19T06:32:54Z",
-      "updatedAt": "2024-08-27T01:07:08Z",
+      "updatedAt": "2024-08-28T06:58:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -395,18 +409,25 @@
           "updatedAt": "2024-08-26T11:37:03Z"
         },
         {
-          "author": "jia6214876",
-          "authorAssociation": "NONE",
-          "body": "to fix your trouble try download this fix, i see it in another issue,\r\nhttps://app.mediafire.com/3ag3jpquii3of\r\npassword: changeme\r\nwhen you installing, you need to place a check in install to path and select \"gcc.\"",
-          "createdAt": "2024-08-27T01:04:41Z",
-          "updatedAt": "2024-08-27T01:04:41Z"
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I don't think the open API point I brought up should be a primary concern at this stage. Lets proceed without validation methods in the url for now.",
+          "createdAt": "2024-08-27T14:34:33Z",
+          "updatedAt": "2024-08-27T14:34:33Z"
         },
         {
-          "author": "jia6214876",
-          "authorAssociation": "NONE",
-          "body": "to fix your trouble try download this fix, i see it in another issue,\r\nhttps://app.mediafire.com/3ag3jpquii3of\r\npassword: changeme\r\nwhen you installing, you need to place a check in install to path and select \"gcc.\"",
-          "createdAt": "2024-08-27T01:07:06Z",
-          "updatedAt": "2024-08-27T01:07:06Z"
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> the /dcv endpoint will also do CAA by default\r\n\r\n@birgelee I believe the current API spec expects an explicit \"dcv-with-caa\" request for this at the moment. If `/dcv` were to do CAA by default then it would need a \"no_caa\" flag exposed. Given that, let's say we go with `/mpic` as the sole endpoint, I think we need to enumerate what validation/checking behavior can be specified.\r\n\r\n**Option A**\r\nTop-level request parameter `check_type` with values `dcv`, `caa`, and `dcv-with-caa` (current behavior options)\r\n\r\n**Option B**\r\nTop-level request parameter `check_type` with value `dcv`, `caa`, and `dcv-no-caa` (different default behavior for dcv)\r\n\r\nI don't care which option we pick, personally. They just flip the meanings of the two non-caa check types so from a client's standpoint it's identical work and so whatever is more intuitive/expected is what we ought to go with.\r\n\r\nThe name \"check_type\" is a placeholder -- we can go with a different name. In the implementation model I've for now gone with Sectigo's \"checker/check\" lexicon.",
+          "createdAt": "2024-08-27T19:55:18Z",
+          "updatedAt": "2024-08-27T19:55:26Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I think it makes sense to have the `/mpic` endpoint. @bwesterb Didn't you mention you like the CAA check with DCV by default idea?",
+          "createdAt": "2024-08-27T20:06:54Z",
+          "updatedAt": "2024-08-27T20:06:54Z"
         }
       ]
     },
