@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-29T01:18:25.262977+00:00",
+  "timestamp": "2024-09-01T01:36:58.964864+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -114,7 +114,7 @@
       "labels": [],
       "body": "Probably best to make optional and suggest `Authorization` header for token.",
       "createdAt": "2024-08-14T17:00:26Z",
-      "updatedAt": "2024-08-28T23:38:27Z",
+      "updatedAt": "2024-08-29T21:30:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -130,6 +130,20 @@
           "body": "What exactly are we planning to achieve with optional client authentication? If we dont plan to make it a requirement then its best to leave it out of the standard. Individual deployments can carry out their own authentication, as needed.\r\n\r\nWe can mention a recommendation in considerations though using `Authorization` request header.",
           "createdAt": "2024-08-28T23:38:25Z",
           "updatedAt": "2024-08-28T23:38:25Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "One goal is to make it easy for CAs to switch between MPIC providers. If that is the case, we'd like the authorization methods not to diverge too much.",
+          "createdAt": "2024-08-29T10:53:46Z",
+          "updatedAt": "2024-08-29T10:53:46Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We can keep it optional as recommendation imo.",
+          "createdAt": "2024-08-29T21:30:11Z",
+          "updatedAt": "2024-08-29T21:30:11Z"
         }
       ]
     },
@@ -145,7 +159,7 @@
       "labels": [],
       "body": "We do not want retries to help the attacker.",
       "createdAt": "2024-08-14T17:01:58Z",
-      "updatedAt": "2024-08-29T00:28:06Z",
+      "updatedAt": "2024-08-30T02:45:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -165,9 +179,30 @@
         {
           "author": "SulemanAhmadd",
           "authorAssociation": "COLLABORATOR",
-          "body": "I believe details about max number of retries is an implementation specific characteristic, not something that the standard should define.\r\n\r\nI am not sure if the client will have the right knowledge or confidence to determine if they should go with the same set of perspective or different on retries when given the option. I am leaning towards keeping it deterministic (the client should not have to deal with it) to prevent an adversary creating a false quorum, while maintaining simplicity in design. \r\n\r\nA retry by nature means re-doing the _same_ work. I suspect CAs in the future might be relying on multiple MPIC services anyways.",
+          "body": "I believe details about max number of retries is an implementation specific characteristic, not something that the standard should define.\r\n\r\nI am not sure if the client will have the right knowledge or confidence to determine if they should go with the same set of perspective or different on retries when given the option. I am leaning towards keeping it deterministic (the client should not have to deal with it) to prevent an adversary creating a false quorum, while maintaining simplicity in design. \r\n\r\nA retry by nature means re-doing the _same_ work. I suspect some CAs in the future might use multiple MPIC services as fallback on failures.",
           "createdAt": "2024-08-29T00:28:05Z",
-          "updatedAt": "2024-08-29T00:28:05Z"
+          "updatedAt": "2024-08-29T01:27:57Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Perhaps this is a separate issue, but I'd like to discuss why the MPIC service should be the one to retry. An alternative is for the CA to retry the request to the MPIC service.\r\n\r\n@SulemanAhmadd wrote\r\n\r\n> I believe details about max number of retries is an implementation specific characteristic, not something that the standard should define.\r\n\r\nIt depends how the retry is implemented. If the vantage points change on each try, then it degrades security. If it's deterministic as you assume, then it's less problematic.",
+          "createdAt": "2024-08-29T10:57:14Z",
+          "updatedAt": "2024-08-29T11:01:21Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It's a question of balancing the value of retries vs not arriving at a \"false quorum\" as @SulemanAhmadd mentioned.\r\n\r\nIf each retry uses the same perspectives every time then whether retries are done by the client or by the service makes no difference. If there is actual logic to making retries more useful than that, then I believe it belongs in the service and should be opaque to the client.\r\n\r\nThe specific retry logic I proposed is discussed here: https://github.com/open-mpic/open-mpic-specification/issues/3\r\nIt attempts to maintain determinism while providing some value to retrying corroboration with disjoint sets of perspectives (cohorts). The client does not get to pick what perspectives are in what disjoint set, and there is a small and finite number of such cohorts that would be created.\r\n\r\nThis is another situation where the two paradigms -- sellf-hosted vs SaaS -- carry different implications about what makes the most sense to do.\r\n\r\nI can't assume that a self-hosted perspective will always be operating perfectly. As a result, there can be value to retries for a self-hosted solution, as they could provide feedback on the behavior of individual perspectives while not letting perspectives that are failing for reasons other than BGP Hijacking mislead corroboration (e.g., London AWS Lambda is down for whatever reason), yet still ensure that passing corroboration follows the spirit and letter of the requirements. ",
+          "createdAt": "2024-08-29T16:12:55Z",
+          "updatedAt": "2024-08-30T02:45:33Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Perhaps this is a separate issue, but I'd like to discuss why the MPIC service should be the one to retry. An alternative is for the CA to retry the request to the MPIC service.\r\n\r\nMy comment assumed we were discussing deterministic retries initiated _by the client_ (CA) in this thread. Client retries and MPIC service internal retries are two separate issues imo.\r\n\r\nSo for client initiated retries, I think it makes sense to be deterministic on the set of perspectives each time. We dont have to define an upper limit on possible retries in the standard. Need to make sure adversaries cannot trick the MPIC service to choose its favorable perspectives.\r\n\r\nFor internal MPIC service retries, I feel @sciros approach is a good one. The service can have the ability to choose different 'healthy' perspectives if some run fails with 'non-healthy' perspectives outcomes (where health is determine by some error types that we can define). This keeps choice of perspectives completely opaque and deterministic to the client at least, while still maintaining useful internal retry logic. Keeping it opaque is the key.\r\n\r\nThoughts?",
+          "createdAt": "2024-08-29T19:25:13Z",
+          "updatedAt": "2024-08-29T19:25:13Z"
         }
       ]
     },
@@ -183,7 +218,7 @@
       "labels": [],
       "body": "Should the CA trust the WebPKI to authenticate the MPIC service?",
       "createdAt": "2024-08-14T17:02:41Z",
-      "updatedAt": "2024-08-21T15:33:00Z",
+      "updatedAt": "2024-08-29T21:19:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -192,6 +227,13 @@
           "body": "I know this is ugly, but in the end of ensuring a clean implementation, I think a standard HTTPS connection simplifies things a lot. We could use some SHOULD language to say something like: \r\n\r\nTo avoid dependence on the webPKI, CAs deploying MPIC APIs SHOULD authenticate MPIC API endpoints using self-signed certificates or private trust anchors. MPIC API endpoints MUST be authenticated and traffic to an MPIC API endpoint MUST NOT be sent in plaintext.\r\n\r\nIMO ensuring endpoint authentication is more important than the cyclic trust issue.",
           "createdAt": "2024-08-21T15:32:58Z",
           "updatedAt": "2024-08-21T15:32:58Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If we let the MPIC service sign it responses, do we still need a certificate for the MPIC endpoint? I wonder if CT logs also follow the same signed responses trust model. Only using signed responses though means we are comfortable with plaintext requests.\r\n\r\nAlso, there is a notion of whether the same authentication requirements apply for CA -> MPIC service and internally for MPIC service for contacting different perspectives.",
+          "createdAt": "2024-08-29T21:19:24Z",
+          "updatedAt": "2024-08-29T21:19:24Z"
         }
       ]
     },
@@ -252,7 +294,7 @@
       "labels": [],
       "body": "Do we want the MPIC service to sign its responses as evidence.",
       "createdAt": "2024-08-14T17:03:51Z",
-      "updatedAt": "2024-08-26T11:19:04Z",
+      "updatedAt": "2024-08-29T21:26:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -293,9 +335,23 @@
         {
           "author": "bwesterb",
           "authorAssociation": "COLLABORATOR",
-          "body": "Optional sounds good. I'd like to suggest to punt this to after the initial draft.\r\n\r\n(There is of course a relation with #4: if in practice OpenMPIC users are using self-signed certificates or pining, then we could this is essentially shouldering the same downsides.)",
+          "body": "Optional sounds good. I'd like to suggest to punt this to after the initial draft.\r\n\r\n(There is of course a relation with #4: if in practice OpenMPIC users are using self-signed certificates or pinning, then we could do this instead, as it's essentially shouldering the same downsides.)",
           "createdAt": "2024-08-26T11:19:03Z",
-          "updatedAt": "2024-08-26T11:19:03Z"
+          "updatedAt": "2024-08-29T11:18:03Z"
+        },
+        {
+          "author": "gcimaszewski",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Including the signing functionality will likely make the implementation even more cloud provider-specific - the signing keys would need to be stored and accessed through a key management or secrets storage service, and AWS alone offers several of them. \r\nThis would probably also need more discussion for how the signing key is decided on, administered, and rotated (especially if the signatures are intended to serve as a transparency log). \r\nI would vote on omitting it from an MPIC draft, but I do think the idea of creating a verifiable log that MPIC was performed is super interesting. ",
+          "createdAt": "2024-08-29T11:11:31Z",
+          "updatedAt": "2024-08-29T11:11:31Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think signed responses will be great for transparency and accountability. CAs can use the signatures to validate that they used a specific MPIC operator. \r\n\r\n@gcimaszewski comments do resonate though. There is an additional consideration on how to discover the MPIC public keys. We can keep it out of the first iteration as a requirement but recommend in the considerations.",
+          "createdAt": "2024-08-29T21:26:16Z",
+          "updatedAt": "2024-08-29T21:26:16Z"
         }
       ]
     },
@@ -356,7 +412,7 @@
       "labels": [],
       "body": "This question has come up as part of open-mpic as well but we may as well discuss it all here to keep things synced up.\r\n\r\nWhat should the endpoints be for the various validations/checks that we'll want performed? Due to the nature of the industry terms, there's no obviously elegant approach.\r\n\r\nI figured an easy way to start the conversation would be to throw some ideas out there to beat up on. Gemini and ChatGPT were happy to oblige, though each gave me quite different results for my question about this. Here was my prompt:\r\n\r\n> Let's talk about PKI and certificate issuance. I want to brainstorm endpoint naming for an API that would do multi-perspective issuance corroboration for various validation checks.\r\nThere are several kinds of \"verifications\" or \"validations\" that get run as part of issuing a signed certificate. Correct me where I'm wrong, because I want to be very technically pedantic about this, but I think of the checks as being, roughly, DCV (domain control validation) and then CAA (certificate authority authorization) checking. With DCV the word \"validation\" is already in the name, and with CAA it's not, so I think many people in the PKI space do refer to CAA record validation as a \"CAA check,\" and I've seen the occasional article where, perhaps for the sake of parallel terminology, people will talk of a \"DCV check.\" But if I wanted to have an API with endpoints that carry out these various verifications, what is a good way to organize and name them? Perhaps DCV should be broken out into the various validation methods? And then CAA is just alongside those as \"yet another record type\" to check the presence of? Or maybe it's \"/dcv-check\" and \"/caa-check\" and then specifying in the request body what kind of DCV validation type to carry out (HTTP, etc.)? Please ruminate on this for me.\r\n\r\nGemini gave me the following options:\r\n\r\n> **Option 1:** Hierarchical Structure; clear separation of concerns, detailed endpoint names.\r\n> `/validations/dcv`\r\n> `/validations/dcv/http`\r\n> `/validations/dcv/dns`\r\n> `/validations/dcv/email`\r\n> ...\r\n> `/validations/caa`\r\n> `/validations/ocsp` (or other validation types)\r\n> \r\n> **Option 2:** Flat Structure with Query Parameters; simplicity, flexibility.\r\n> `/validate` (or `/verify`)\r\n> Query parameters:\r\n> `type`: `dcv`, `caa`, `ocsp`, etc.\r\n> `method`: `http`, `dns`, `email`, etc. (for DCV)\r\n> \r\n> **Option 3:** Combined Approach; balance between hierarchy and simplicity.\r\n> `/dcv`\r\n> `/dcv/http`\r\n> `/dcv/dns`\r\n> `/dcv/email`\r\n> `/caa`\r\n> `/ocsp` (or other validation types)\r\n> `/validate` for generic validation requests with query parameters \r\n\r\nPersonally I wasn't fond of any of these, although if I had to choose between the above I'd go with some version of option 1 or option 3.\r\n\r\nChatGPT 4o gave me a very different answer, seemingly being led by my prompt a bit more, so I found myself biased towards it.\r\n\r\n> 1. Endpoint Structure Overview\r\n>   **DCV** (Domain Control Validation): Since DCV involves different methods (HTTP, DNS, email, etc.), it makes sense to either have \r\n> separate endpoints for each method or a single endpoint with the method specified in the request.\r\n>   **CAA** (Certificate Authority Authorization): CAA is more straightforward, typically involving a single check to see if the domain has specific CAA records that allow the issuance of a certificate by a CA.\r\n> 2. Naming Conventions\r\n> Consistency is key. If you choose to use the term \"check\" for CAA, it might be beneficial to apply it uniformly, even to DCV, despite \"validation\" already being in the name.\r\n> 3. Potential Endpoint Structures\r\n>     1. **Option A**: Separate Endpoints for Each DCV Method\r\n>     `/dcv/http-check`: Validates domain control via HTTP.\r\n>     `/dcv/dns-check`: Validates domain control via DNS.\r\n>     `/dcv/email-check`: Validates domain control via email.\r\n>     `/caa-check`: Checks the CAA records for the domain.\r\n>     Pros: Clear separation of concerns, Easy to manage and extend if new DCV methods are added.\r\n>     Cons: Potentially more endpoints to maintain.\r\n>    \r\n>     2. **Option B**: Unified DCV Endpoint with Method in Request\r\n>     `/dcv-check`: Single endpoint for DCV validation. The method (HTTP, DNS, email) is specified in the request body or as a query parameter.\r\n>     `/caa-check`: Same as in Option A.\r\n>     Pros: Fewer endpoints, which might simplify API documentation, Easier to handle common validation logic.\r\n>     Cons: Slightly more complex request handling. Less explicit endpoint naming.\r\n\r\nI'm personally partial to ChatGPT's **Option B** (and using a request body parameter for the method), as that's the direction I've proposed taking the open-mpic reference implementation for now and it's very close to its current state (v1.0.1 has `/validation` and `/caa-check` paths). But I don't know if it's the best direction to take and figure this is one of the first things we should sort out anyway for a standard API.",
       "createdAt": "2024-08-19T06:32:54Z",
-      "updatedAt": "2024-08-28T06:58:31Z",
+      "updatedAt": "2024-08-31T04:29:37Z",
       "closedAt": null,
       "comments": [
         {
@@ -428,6 +484,13 @@
           "body": "I think it makes sense to have the `/mpic` endpoint. @bwesterb Didn't you mention you like the CAA check with DCV by default idea?",
           "createdAt": "2024-08-27T20:06:54Z",
           "updatedAt": "2024-08-27T20:06:54Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In the current text, there is a `method` field in the request object which is either `http`, `dns`, or `caa`. The CAA check is also preformed for the `http` and `dns` methods unless the optional `caa-check` field is set to false. This seems very similar to @sciros' proposal. ",
+          "createdAt": "2024-08-29T11:23:37Z",
+          "updatedAt": "2024-08-29T11:23:37Z"
         }
       ]
     },
@@ -598,7 +661,7 @@
       "id": "I_kwDOMYks0s6UN5SF",
       "title": "Fix build",
       "url": "https://github.com/open-mpic/draft-mpic/issues/14",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bwesterb",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -607,8 +670,8 @@
       "labels": [],
       "body": "@birgelee could you set \"Workflow permissions\" to \"Read and write permissions\" [in the repository settings](https://github.com/open-mpic/draft-mpic/settings/actions#actions_default_workflow_permissions_write)? That probably fixed the build. I lost admin rights after transferring #1 ",
       "createdAt": "2024-08-26T11:50:26Z",
-      "updatedAt": "2024-08-26T16:59:50Z",
-      "closedAt": null,
+      "updatedAt": "2024-08-29T10:58:42Z",
+      "closedAt": "2024-08-29T10:58:42Z",
       "comments": [
         {
           "author": "birgelee",
@@ -616,6 +679,13 @@
           "body": "I had to change this at the org level, but it should be updated now. Please let me know if you the run is still having issues.",
           "createdAt": "2024-08-26T16:59:49Z",
           "updatedAt": "2024-08-26T16:59:49Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That fixed it. Thanks.",
+          "createdAt": "2024-08-29T10:58:42Z",
+          "updatedAt": "2024-08-29T10:58:42Z"
         }
       ]
     }
