@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-01T01:36:58.964864+00:00",
+  "timestamp": "2024-09-03T01:17:59.242648+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -218,7 +218,7 @@
       "labels": [],
       "body": "Should the CA trust the WebPKI to authenticate the MPIC service?",
       "createdAt": "2024-08-14T17:02:41Z",
-      "updatedAt": "2024-08-29T21:19:25Z",
+      "updatedAt": "2024-09-02T14:55:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -234,6 +234,13 @@
           "body": "If we let the MPIC service sign it responses, do we still need a certificate for the MPIC endpoint? I wonder if CT logs also follow the same signed responses trust model. Only using signed responses though means we are comfortable with plaintext requests.\r\n\r\nAlso, there is a notion of whether the same authentication requirements apply for CA -> MPIC service and internally for MPIC service for contacting different perspectives.",
           "createdAt": "2024-08-29T21:19:24Z",
           "updatedAt": "2024-08-29T21:19:24Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If the attacker can manipulate the communication between CA and MPIC service, then signing the response is not enough. A simple example is the following. The attacker might change the domain name of the request to an attacker controlled domain name. If the response doesn't contain the domain name, then the CA might be convinced of domain control where none is present.",
+          "createdAt": "2024-09-02T14:55:50Z",
+          "updatedAt": "2024-09-02T14:55:50Z"
         }
       ]
     },
