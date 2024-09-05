@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-03T01:17:59.242648+00:00",
+  "timestamp": "2024-09-05T01:19:13.183217+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -218,7 +218,7 @@
       "labels": [],
       "body": "Should the CA trust the WebPKI to authenticate the MPIC service?",
       "createdAt": "2024-08-14T17:02:41Z",
-      "updatedAt": "2024-09-02T14:55:52Z",
+      "updatedAt": "2024-09-03T20:27:47Z",
       "closedAt": null,
       "comments": [
         {
@@ -241,6 +241,41 @@
           "body": "If the attacker can manipulate the communication between CA and MPIC service, then signing the response is not enough. A simple example is the following. The attacker might change the domain name of the request to an attacker controlled domain name. If the response doesn't contain the domain name, then the CA might be convinced of domain control where none is present.",
           "createdAt": "2024-09-02T14:55:50Z",
           "updatedAt": "2024-09-02T14:55:50Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Right, but if the MPIC service signs over the request + response attributes then it can provide integrity of what was received and the outcome of MPIC process, to the client. Would that be sufficient?",
+          "createdAt": "2024-09-03T17:35:38Z",
+          "updatedAt": "2024-09-03T17:35:38Z"
+        },
+        {
+          "author": "gcimaszewski",
+          "authorAssociation": "COLLABORATOR",
+          "body": "From the docs, it looks like Cloudflare's Multipath DCV API does not return the exact URL/domain name paths that were validated (although it does gives the details of the CAA records). For a Cloudflare-like spec without authentication on the requests from CA to MPIC, the attack that @bwesterb described is likely feasible. \r\nThe current Open MPIC spec does return the full parameters used for the challenge queries in the `validation-details` field within the `ValidationResponse` type. For this case, a signature on the response will allow the CA to check that the MPIC service received the correct validation parameters. I agree with @birgelee that simply designating HTTPS would take care of both problems. AWS only allows HTTPS endpoints for its API services anyway.",
+          "createdAt": "2024-09-03T18:10:33Z",
+          "updatedAt": "2024-09-03T18:10:33Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "My high level thought is whether or not we have the signing service, the API must be run over HTTPS. I think this should be specified in the RFC.\r\n\r\nI also agree that @bwesterb 's attack is viable if the API does not echo back the request in its response. If it does, I think this attack is mitigated.\r\n\r\nI would put in a recommendation for echoing API call parameters in the response as not only does it mitigate this attack, but it makes a self-contained log object that does not need to be cross joined with the original requests. I know this sounds somewhat silly, but having done a good amount of analysis on Let's Encrypt logs, log lines that only make sense in context (i.e., response 1234 needs to be analyzed with request 1234 to know what domain was being checked) are a huge hassle in post analysis. I feel from an audit standpoint and an implementation simplicity standpoint, just echoing parameters improves the usability of the API.",
+          "createdAt": "2024-09-03T19:29:16Z",
+          "updatedAt": "2024-09-03T19:29:16Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Echoing will work for this particular attack if the client also checks that the request in the response matches the origin request. These are the kind of things that clients tend to forget.\r\n\r\n> My high level thought is whether or not we have the signing service, the API must be run over HTTPS. I think this should be specified in the RFC.\r\n\r\nI agree. Let's lean as much on TLS as possible for transport security and not try to reinvent or complicate things too much.\r\n\r\nHaving an audit trail is a more convincing argument for echoing.",
+          "createdAt": "2024-09-03T19:54:57Z",
+          "updatedAt": "2024-09-03T19:54:57Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I am not sure how self-signed certs will provide us meaningful value on top of signed service responses (based on request+response data). Clients (CA) would have to verify the signature anyways. Confidentiality is not a concern given current requirements. We should consider ease of service deployment / management alongside. Lets aim to get more feedback on this at IETF.\r\n\r\nOn logging, though a separate issue, I agree on that. That one can be a MUST.",
+          "createdAt": "2024-09-03T20:27:45Z",
+          "updatedAt": "2024-09-03T20:27:45Z"
         }
       ]
     },
