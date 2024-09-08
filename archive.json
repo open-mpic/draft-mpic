@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-05T01:19:13.183217+00:00",
+  "timestamp": "2024-09-08T01:25:04.039587+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -218,7 +218,7 @@
       "labels": [],
       "body": "Should the CA trust the WebPKI to authenticate the MPIC service?",
       "createdAt": "2024-08-14T17:02:41Z",
-      "updatedAt": "2024-09-03T20:27:47Z",
+      "updatedAt": "2024-09-06T12:01:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -276,6 +276,13 @@
           "body": "I am not sure how self-signed certs will provide us meaningful value on top of signed service responses (based on request+response data). Clients (CA) would have to verify the signature anyways. Confidentiality is not a concern given current requirements. We should consider ease of service deployment / management alongside. Lets aim to get more feedback on this at IETF.\r\n\r\nOn logging, though a separate issue, I agree on that. That one can be a MUST.",
           "createdAt": "2024-09-03T20:27:45Z",
           "updatedAt": "2024-09-03T20:27:45Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "@SulemanAhmadd see my comment in #6 on why TLS alone is likely not sufficient. ",
+          "createdAt": "2024-09-06T12:01:44Z",
+          "updatedAt": "2024-09-06T12:01:44Z"
         }
       ]
     },
@@ -336,7 +343,7 @@
       "labels": [],
       "body": "Do we want the MPIC service to sign its responses as evidence.",
       "createdAt": "2024-08-14T17:03:51Z",
-      "updatedAt": "2024-08-29T21:26:18Z",
+      "updatedAt": "2024-09-06T16:13:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -394,6 +401,34 @@
           "body": "I think signed responses will be great for transparency and accountability. CAs can use the signatures to validate that they used a specific MPIC operator. \r\n\r\n@gcimaszewski comments do resonate though. There is an additional consideration on how to discover the MPIC public keys. We can keep it out of the first iteration as a requirement but recommend in the considerations.",
           "createdAt": "2024-08-29T21:26:16Z",
           "updatedAt": "2024-08-29T21:26:16Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "[speaking with my Max-Planck Institute for Informatics hat on here]\r\n\r\nI think signing responses with this is an absolute must. TLS provides message integrity and confidentiality guarantees, but does not provide long term non-repudiation. A general goal of WebPKI infrastructure is to be able to detect (and possibly blame) mis-behaving parties. \r\n\r\nOn the specifics how to achieve this I'm less certain. RFC 9421 HTTP Signatures seems like exactly what would be needed, and already exists within the IETF ecosystem. For this protocol we could define the `keyid` to be a URL to an X.509 with a new mpicServerCertification EKU. The SAN of that certificate can then bind the MPIC response to a domain as the MPIC provider's identity. \r\n\r\nIf we go down this route with X.509 certs then a mpicClientAuthorization EKU could also be used to solve #2.\r\n\r\nI'm open to suggestions for better ways to do this, but I'm not willing to accept that non-refutable signatures aren't a core part of this protocol. ",
+          "createdAt": "2024-09-06T11:41:25Z",
+          "updatedAt": "2024-09-06T11:41:25Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I'm open to suggestions for better ways to do this, but I'm not willing to accept that non-refutable signatures aren't a core part of this protocol.\r\n\r\nWith ACME, the subscriber doesn't sign the challenge with a non-refutable signature.\r\n\r\nI think it's good to reason in concrete attacks here. When would the signature be useful? It doesn't help in the obvious case of a malicious MPIC service: that malicious service can simply claim it saw certain HTTP responses and then sign it. There is nothing to compare those claims to. I am not yet convinced that signing is categorically necessary here.\r\n\r\nI don't think RFC 9421 signatures are ideal: they're very much tied to the HTTP context. We want CAs to extract them. I think it makes sense to piggy-back on the simple signature method used in CT RFC6962 with which CAs are already familiar.\r\n",
+          "createdAt": "2024-09-06T12:16:58Z",
+          "updatedAt": "2024-09-06T12:16:58Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "> With ACME, the subscriber doesn't sign the challenge with a non-refutable signature.\r\n\r\nYou were not to know this, but I have had some discussions with the Chrome recently about long term verifiable DCV. The basic idea is to log the validation used by the CA publicly (a la CT) and require the website to keep that available for the duration of the certificate.\r\n\r\nSignatures over MPIC would form part of this imo. ",
+          "createdAt": "2024-09-06T14:35:32Z",
+          "updatedAt": "2024-09-06T14:35:32Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "So I think signatures do help in the case where a CA misbehaves and is not calling MPIC but wants to pretend they are. Essentially, should a CA wish to generate fraudulent validation logs claiming they did validation when they did not, MPIC service signatures from a 3rd party help.\r\n\r\nI personally still think they should be optional. If a CA runs the MPIC service, I don't really think they are helpful. If these were to be implemented in Open MPIC, I would probably just have CAs input the signing keys as some sort of config file as opposed to using any type of AWS key management service (to avoid additional AWS dependency) and there would be no security against the CA owner taking the key and signing arbitrary responses.\r\n\r\nFinally, I would advise against any signature scheme that expects HTTP messages. The core API object has been put mostly into JSON and I would not be surprised if the transport of these JSON requests/responses eventually moved off HTTPS in some implementations (e.g., Apache Kafka events, gRPC calls, etc...).",
+          "createdAt": "2024-09-06T16:13:25Z",
+          "updatedAt": "2024-09-06T16:13:25Z"
         }
       ]
     },
@@ -454,7 +489,7 @@
       "labels": [],
       "body": "This question has come up as part of open-mpic as well but we may as well discuss it all here to keep things synced up.\r\n\r\nWhat should the endpoints be for the various validations/checks that we'll want performed? Due to the nature of the industry terms, there's no obviously elegant approach.\r\n\r\nI figured an easy way to start the conversation would be to throw some ideas out there to beat up on. Gemini and ChatGPT were happy to oblige, though each gave me quite different results for my question about this. Here was my prompt:\r\n\r\n> Let's talk about PKI and certificate issuance. I want to brainstorm endpoint naming for an API that would do multi-perspective issuance corroboration for various validation checks.\r\nThere are several kinds of \"verifications\" or \"validations\" that get run as part of issuing a signed certificate. Correct me where I'm wrong, because I want to be very technically pedantic about this, but I think of the checks as being, roughly, DCV (domain control validation) and then CAA (certificate authority authorization) checking. With DCV the word \"validation\" is already in the name, and with CAA it's not, so I think many people in the PKI space do refer to CAA record validation as a \"CAA check,\" and I've seen the occasional article where, perhaps for the sake of parallel terminology, people will talk of a \"DCV check.\" But if I wanted to have an API with endpoints that carry out these various verifications, what is a good way to organize and name them? Perhaps DCV should be broken out into the various validation methods? And then CAA is just alongside those as \"yet another record type\" to check the presence of? Or maybe it's \"/dcv-check\" and \"/caa-check\" and then specifying in the request body what kind of DCV validation type to carry out (HTTP, etc.)? Please ruminate on this for me.\r\n\r\nGemini gave me the following options:\r\n\r\n> **Option 1:** Hierarchical Structure; clear separation of concerns, detailed endpoint names.\r\n> `/validations/dcv`\r\n> `/validations/dcv/http`\r\n> `/validations/dcv/dns`\r\n> `/validations/dcv/email`\r\n> ...\r\n> `/validations/caa`\r\n> `/validations/ocsp` (or other validation types)\r\n> \r\n> **Option 2:** Flat Structure with Query Parameters; simplicity, flexibility.\r\n> `/validate` (or `/verify`)\r\n> Query parameters:\r\n> `type`: `dcv`, `caa`, `ocsp`, etc.\r\n> `method`: `http`, `dns`, `email`, etc. (for DCV)\r\n> \r\n> **Option 3:** Combined Approach; balance between hierarchy and simplicity.\r\n> `/dcv`\r\n> `/dcv/http`\r\n> `/dcv/dns`\r\n> `/dcv/email`\r\n> `/caa`\r\n> `/ocsp` (or other validation types)\r\n> `/validate` for generic validation requests with query parameters \r\n\r\nPersonally I wasn't fond of any of these, although if I had to choose between the above I'd go with some version of option 1 or option 3.\r\n\r\nChatGPT 4o gave me a very different answer, seemingly being led by my prompt a bit more, so I found myself biased towards it.\r\n\r\n> 1. Endpoint Structure Overview\r\n>   **DCV** (Domain Control Validation): Since DCV involves different methods (HTTP, DNS, email, etc.), it makes sense to either have \r\n> separate endpoints for each method or a single endpoint with the method specified in the request.\r\n>   **CAA** (Certificate Authority Authorization): CAA is more straightforward, typically involving a single check to see if the domain has specific CAA records that allow the issuance of a certificate by a CA.\r\n> 2. Naming Conventions\r\n> Consistency is key. If you choose to use the term \"check\" for CAA, it might be beneficial to apply it uniformly, even to DCV, despite \"validation\" already being in the name.\r\n> 3. Potential Endpoint Structures\r\n>     1. **Option A**: Separate Endpoints for Each DCV Method\r\n>     `/dcv/http-check`: Validates domain control via HTTP.\r\n>     `/dcv/dns-check`: Validates domain control via DNS.\r\n>     `/dcv/email-check`: Validates domain control via email.\r\n>     `/caa-check`: Checks the CAA records for the domain.\r\n>     Pros: Clear separation of concerns, Easy to manage and extend if new DCV methods are added.\r\n>     Cons: Potentially more endpoints to maintain.\r\n>    \r\n>     2. **Option B**: Unified DCV Endpoint with Method in Request\r\n>     `/dcv-check`: Single endpoint for DCV validation. The method (HTTP, DNS, email) is specified in the request body or as a query parameter.\r\n>     `/caa-check`: Same as in Option A.\r\n>     Pros: Fewer endpoints, which might simplify API documentation, Easier to handle common validation logic.\r\n>     Cons: Slightly more complex request handling. Less explicit endpoint naming.\r\n\r\nI'm personally partial to ChatGPT's **Option B** (and using a request body parameter for the method), as that's the direction I've proposed taking the open-mpic reference implementation for now and it's very close to its current state (v1.0.1 has `/validation` and `/caa-check` paths). But I don't know if it's the best direction to take and figure this is one of the first things we should sort out anyway for a standard API.",
       "createdAt": "2024-08-19T06:32:54Z",
-      "updatedAt": "2024-08-31T04:29:37Z",
+      "updatedAt": "2024-09-06T12:39:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -533,6 +568,48 @@
           "body": "In the current text, there is a `method` field in the request object which is either `http`, `dns`, or `caa`. The CAA check is also preformed for the `http` and `dns` methods unless the optional `caa-check` field is set to false. This seems very similar to @sciros' proposal. ",
           "createdAt": "2024-08-29T11:23:37Z",
           "updatedAt": "2024-08-29T11:23:37Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "If one API endpoint is used I think it should accept a list of checks to be performed together, rather than having to make multiple requests for each validation type. This also allows new semantics to slot in neatly if there's some new CAA like thing that CAs want to check along with HTTP/DNS and CAA.\r\n\r\nI support explicit protocol versioning. I think there should be a metadata document at `/mpic/directory` (or maybe even `/.well-known/mpic` given this is IETF work?) that lists what versions the server supports, and configuration parameters (not that I can currently see a need for those). This would allow a client to perform version negotiation, simplifying moving between MPIC providers. ",
+          "createdAt": "2024-09-06T11:58:09Z",
+          "updatedAt": "2024-09-06T11:58:09Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I think there should be a metadata document [...]\r\n\r\nIf required we can punt that to when we actually have a second version. A missing directory (or whatever the mechanism would be) indicates v1.\r\n\r\n(Context: I am trying to keep the initial draft as simple as possible, but no simpler.)",
+          "createdAt": "2024-09-06T12:06:07Z",
+          "updatedAt": "2024-09-06T12:06:07Z"
+        },
+        {
+          "author": "romanf",
+          "authorAssociation": "NONE",
+          "body": "Not sure if this question belongs here: Has it been decided that one endpoint will do the corroboration from multiple perspectives? So if somebody wants to run an MPIC instance that party would have to have 2-6 remotes? Or is it the intention that one endpoint will be one perspective?",
+          "createdAt": "2024-09-06T12:09:01Z",
+          "updatedAt": "2024-09-06T12:09:01Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Not sure if this question belongs here: Has it been decided that one endpoint will do the corroboration from multiple perspectives? So if somebody wants to run an MPIC instance that party would have to have 2-6 remotes? Or is it the intention that one endpoint will be one perspective?\r\n\r\nThe single endpoint will do corroboration from multiple perspectives.",
+          "createdAt": "2024-09-06T12:19:08Z",
+          "updatedAt": "2024-09-06T12:19:08Z"
+        },
+        {
+          "author": "romanf",
+          "authorAssociation": "NONE",
+          "body": "Wouldn't it be more flexible to use a model like with Certificate Transparency? Where a number of organizations could each run one perspective and CAs select the required number of perspectives?",
+          "createdAt": "2024-09-06T12:35:17Z",
+          "updatedAt": "2024-09-06T12:35:17Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Let's discuss that in #15 ",
+          "createdAt": "2024-09-06T12:39:17Z",
+          "updatedAt": "2024-09-06T12:39:17Z"
         }
       ]
     },
@@ -686,7 +763,7 @@
       "labels": [],
       "body": "https://github.com/bwesterb/draft-mpic/blob/67f9369432bb332c4ae8cc96da1912a212ca222f/draft-westerbaan-secdispatch-mpic.md?plain=1#L141\r\n\r\nI noticed CloudFlare uses base64 representation of CAA records in their internal testing. Is there reason this is preferable to the Canonical Presentation Format for CAA expressed [RFC 6844 Sec 5.1.1.](https://datatracker.ietf.org/doc/html/rfc6844#section-5.1.1) which is more human readable?",
       "createdAt": "2024-08-26T03:44:52Z",
-      "updatedAt": "2024-08-26T10:57:48Z",
+      "updatedAt": "2024-09-06T20:49:20Z",
       "closedAt": null,
       "comments": [
         {
@@ -695,6 +772,41 @@
           "body": "From that same RFC:\r\n\r\n> Value:    A sequence of octets representing the property value.\r\n>      Property values are encoded as binary values and MAY employ sub-\r\n>      formats.\r\n\r\nSo we might see a future new tag, that has a different preferred human readable format than value as character-string (defined in 5.1.1).\r\n\r\nAlso, parsing a character-string is a bit more of a hassle and easy to get wrong:\r\n\r\n- How to interpret `CAA 0 issue @`?\r\n- Will the client `CAA 0 issue (lets\\nencrypt)` correctly?\r\n- What is the meaning of a semicolon? `CAA 0 issue letsencrypt.com;isthisacomment ; or this?`\r\n- This is allowed: `CAA 0 issue \\l\\e\\t\\s\\e\\n\\c\\r\\121pt.com`\r\n",
           "createdAt": "2024-08-26T10:41:52Z",
           "updatedAt": "2024-08-26T10:57:48Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "I agree Base64 is probably better here to avoid DNS text parsing pitfalls.\r\n\r\nThe draft needs to be more specific on what exactly goes into the field. Is it the whole RR ([RFC 1035 \u00a7 3.2.1](https://datatracker.ietf.org/doc/html/rfc1035#section-3.2.1)), whole RRsets ([RFC 1035 \u00a7 4.1](https://datatracker.ietf.org/doc/html/rfc1035#section-4.1)), just the RDATA encoding ([RFC 6844 \u00a7 5.1](https://datatracker.ietf.org/doc/html/rfc6844#section-5.1)), or something else?\r\n\r\nDrawing on points from [my comment in #6](https://github.com/open-mpic/draft-mpic/issues/6#issuecomment-2333871183) I think the DNSSEC chain (or lack there of) should also be returned. This provides some non-reputability of the CAA records, as well as allowing a CA to see if some vantage points see DNSSEC signatures where others don't - possibly a sign of meddling. ",
+          "createdAt": "2024-09-06T11:48:29Z",
+          "updatedAt": "2024-09-06T11:48:29Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "@TheEnbyperor I think the idea of returning the DNSSEC chain is interesting. Do recommend any production DNS software that can produce these chains and also perform validation of the chains offline?\r\n\r\nThere also may be an added complexity in the Open MPIC case given that we rely on AWS's default DNS resolver. I believe it is DNSSEC validating, but we only get the AD bit back, not the entire chain.",
+          "createdAt": "2024-09-06T16:57:45Z",
+          "updatedAt": "2024-09-06T16:57:45Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "I'm not aware of any DNS software daemon that will return the entire chain, but I'm quite familiar with the hickory DNS package for Rust that I'm pretty sure will let you collect all that information - although I haven't checked the docs thoroughly for that. https://github.com/hickory-dns/hickory-dns",
+          "createdAt": "2024-09-06T17:37:13Z",
+          "updatedAt": "2024-09-06T17:37:13Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "Thanks @TheEnbyperor . Even though the resolver collects the information, I do not think there is any current support for packaging the DNSSEC chain info in a format for later consumption. Hickory DNS is also not fully production ready yet with some things like NSEC3 validation not being implemented.\r\n\r\nWe also work with Josh Aas who manages Hickory development, this may be something he would be interested in.\r\n\r\nWhile I am interested in DNSSEC chain proofs, I hesitate a bit to put it into the standard without there being a substantial deployment ecosystem around the generation and consumption of such proofs.",
+          "createdAt": "2024-09-06T19:32:14Z",
+          "updatedAt": "2024-09-06T19:32:14Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree on maintaining Base64 encoding to make parsing of the records easier. I believe we would want to return each applicable RR from the set in the `records` field (in the current design). Its currently implied but we can make it explicit.\r\n\r\nResolvers validate the DNSSEC chains themselves and there is no current mechanism to return a \"proof\" to the client. Returning entire chains can also exceed practical limits of UDP message sizes 64K and can be a source of major amplification attack problem. Lets discuss this suggestion under a separate issue: https://github.com/open-mpic/draft-mpic/issues/16",
+          "createdAt": "2024-09-06T20:49:19Z",
+          "updatedAt": "2024-09-06T20:49:19Z"
         }
       ]
     },
@@ -728,6 +840,96 @@
           "body": "That fixed it. Thanks.",
           "createdAt": "2024-08-29T10:58:42Z",
           "updatedAt": "2024-08-29T10:58:42Z"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOMYks0s6VoMQs",
+      "title": "API for single perspectives",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/15",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> Wouldn't it be more flexible to use a model like with Certificate Transparency? Where a number of organizations could each run one perspective and CAs select the required number of perspectives?\r\n\r\n_Originally posted by @romanf in https://github.com/open-mpic/draft-mpic/issues/8#issuecomment-2333957238_\r\n            ",
+      "createdAt": "2024-09-06T12:38:29Z",
+      "updatedAt": "2024-09-06T22:46:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is an interesting suggestion. This is more difficult to use for a client than the current MPIC API, but has the potential to have a broader ecosystem.\r\n\r\nThe crux is: are there parties that are not willing to run (and open up) a global multi-perspective network, but are willing to run single perspectives. And are these parties sufficiently globally distributed? (Crucially, we want perspectives outside of Europe and North America.)",
+          "createdAt": "2024-09-06T12:41:59Z",
+          "updatedAt": "2024-09-06T14:55:57Z"
+        },
+        {
+          "author": "romanf",
+          "authorAssociation": "NONE",
+          "body": "I can answer for our org... we would be willing to run one perspective (probably redundant from our datacenters which are both located in Switzerland)... since that would basically not cause any additional cost.\r\nRunning a multi-perspective network would not cuase extra cost for big organisations (e.g. Google, Amazon, Microsoft, Cloudflare....) that have the gloal network already. But I'm not sure if they would be willing to offer their perspectives to CAs for free... ;)",
+          "createdAt": "2024-09-06T12:49:10Z",
+          "updatedAt": "2024-09-06T12:49:10Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I can't speak for the other large providers, but Cloudflare [has committed](https://blog.cloudflare.com/secure-certificate-issuance/) to offer the service for free.",
+          "createdAt": "2024-09-06T13:06:20Z",
+          "updatedAt": "2024-09-06T13:06:20Z"
+        },
+        {
+          "author": "TheEnbyperor",
+          "authorAssociation": "NONE",
+          "body": "Speaking with my Glauca Digital hat on we'd also be willing to offer MPIC endpoints for one or two datacenters we have in Europe, but it wouldn't be feasible for us to offer a global service.",
+          "createdAt": "2024-09-06T14:39:35Z",
+          "updatedAt": "2024-09-06T14:39:35Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I am happy this question came up in discussion. This actually reminds me of something Ryan Hurst (https://www.linkedin.com/in/ryanmhurst) had discussed with me where CAs assist other CAs with DCV.\r\n\r\nIn general I like the idea of moving in this direction, but it would likely require a different standard in addition to this proposed draft. I think this draft should be kept explicitly for the interface between CA infrastructure and an MPIC service. I feel standardizing the communication between an MPIC service and multiple perspectives run by different 3rd-party organizations is a good idea but deserves a separate standards draft.\r\n\r\nEven prior to standardization, we may be able to offer something along these lines in the Open MPIC implementation.",
+          "createdAt": "2024-09-06T15:56:59Z",
+          "updatedAt": "2024-09-06T15:56:59Z"
+        },
+        {
+          "author": "sciros",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, from my point of view, this is a different paradigm from the single-endpoint MPIC approach and would require different endpoint definition(s).\r\n\r\nThe current open-mpic specification describes a classic client-server topology, i.e. a service which abstracts away the entire orchestration of MPIC, including how remote perspectives are interrogated and how quorum is determined. The endpoint of interest is client-to-orchestrator. (The orchestrator-to-remote-perspective integration is in this case not specified.)\r\n\r\nThe peer-to-peer model @romanf describes would have each peer carry our their own orchestration, so the endpoint specifications involved would be orchestrator-to-remote-perspective, rather than client-to-orchestrator.\r\n\r\nBoth models are valid per se, and presumably for some CAs one is a better fit than the other. However I believe the assumptions that underlie each, and the practical challenges inherent in each, are materially distinct enough that while one solution can _inform_ the other, I don't think one renders the other obsolete nor can one subsume the other.",
+          "createdAt": "2024-09-06T20:37:33Z",
+          "updatedAt": "2024-09-06T20:37:33Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Note that there are two different approaches: 1) CA selects its preference of single perspectives to use (changes the current API completely), or 2) The MPIC service (orchestrator) does it for the client transparently, similar to what we are doing right now but limited to multiple perspectives under the same org.\r\n\r\nThe former is obviously harder for the client. For the latter, yes, we have not defined any perspective <-> perspective API interface in the draft, but should we consider that strictly out of scope? Surely something to explain in the operations section of the draft. If we do, whether each of those perspectives belongs to the same organization or different organizations, the API interface can be made to remain consistent. It means more state management for the orchestrating MPIC service for sure i.e. if availability of compliant perspectives under org are less than quorum then reach out to other available perspectives from other orgs (easy on paper but can be difficult to coordinate the selection mechanism).\r\n\r\nRegardless, one of the biggest challenge with the single perspective model is determining whether selection of third-party perspectives are sufficiently distributed to meet the distance requirements. 1, 2 or multiple perspectives, the problem here can be generalized to cross organization MPIC.",
+          "createdAt": "2024-09-06T22:45:29Z",
+          "updatedAt": "2024-09-06T22:46:11Z"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "I_kwDOMYks0s6VrXEz",
+      "title": "DNSSEC validation response for CAA checks from each perspective",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/16",
+      "state": "OPEN",
+      "author": "SulemanAhmadd",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> I think the DNSSEC chain (or lack there of) should also be returned. This provides some non-reputability of the CAA records, as well as allowing a CA to see if some vantage points see DNSSEC signatures where others don't - possibly a sign of meddling.\r\n\r\nWas brought up by @TheEnbyperor. Although an interesting idea for better transparency and non-repudiation, in the current state of the world, DNS resolvers do not return DNSSEC authentication chains back to the clients (for practical reasons). The validation is done by the resolver, and the client _trusts_ the process.\r\n\r\nWe can recommend in the draft that for CAA checks, perspectives should prefer use of DNSSEC validating resolvers. By setting the DO bit, we can receive the RRSIG record for CAA of the domain, and the AD bit gives indication that the resolver performed the validation.\r\n\r\nThe question then boils down to, should each perspective return the base64 encoded RRSIG record as well in the response for the CAA check? Would that help provide value for non-reputability?",
+      "createdAt": "2024-09-06T20:47:03Z",
+      "updatedAt": "2024-09-07T21:14:26Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I do not think having the RRSIG is useful because without the full chain the signature cannot be verified. I would advise recording the AD bit and recommending DNSSEC and keeping it at that.",
+          "createdAt": "2024-09-07T21:14:25Z",
+          "updatedAt": "2024-09-07T21:14:25Z"
         }
       ]
     }
