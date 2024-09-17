@@ -78,7 +78,7 @@ Table of Contents
    2.  Conventions and Definitions
    3.  API Structure
      3.1.  caa validation method
-     3.2.  http method
+     3.2.  http-acme method
      3.3.  dns method
    4.  Operation
    5.  Authentication
@@ -105,7 +105,7 @@ Table of Contents
    Several, but not all, CAs use the specific DCV methods of ACME
    [RFC8555].  Domain control validation is vulnerable to DNS and BGP
    hijacks.  These can be partially mitigated by performing DCV from
-   multiple vantage points, which is dubbed "multiple perspective
+   multiple network perspectives, which is dubbed "multiple perspective
    issuance corroboration" (MPIC). corroboration (MPIC) for domain
    control validation.  Ballot SC-67 v3 of CA/B forum requires MPIC to
    be performed by all certification authorities (CAs) in the future.
@@ -131,8 +131,28 @@ Table of Contents
    The MPIC API implements a system for domain validation and CAA record
    checking using multiple perspectives across different regions.
 
-   A MPIC service is identified by a HTTPS url.  As a running example,
-   say https://mpc.example.com/staging.
+   An MPIC service can accept JSON requests over an arbitrary
+   communication channel with an MPIC client.  The MPIC service then
+   produces MPIC responses which are sent back to the MPIC client over
+   the communication channel.  The communication channel may be
+   synchronous (i.e., stall open on each MPIC request until an MPIC
+   response is generated) or asynchronous (i.e., send a message to the
+   MPIC service, close, and then receive a future message from the MPIC
+   service containing a corresponding MPIC response).  The MPIC service
+   protocol does not provide any form of matching between MPIC requests
+   and MPIC responses.  A communication channel is responsible for
+   ensuring that a client can match requests with corresponding
+   responses.  The communication channel MUST provide confidentiality
+   and integrity as well as support for authentication of the MPIC
+   service.
+
+   This document describes communication with an MPIC service using
+   HTTPS POST as the communication channel.  Alternate communication
+   channels include gRPC, Apache Kafka, RabbitMQ, etc...
+
+   A MPIC service running over the HTTPS POST communication channel is
+   identified by a HTTPS url.  As a running example, say
+   https://mpc.example.com/staging.
 
    A client requests a MPIC validation from the service by sending a
    POST request to the resource /mpic/draft-00 below the service URL.
@@ -152,7 +172,7 @@ Table of Contents
 3.1.  caa validation method
 
    A caa requests asks the MPIC service to retrieve the relevant CAA DNS
-   records for a given domain from multiple vantage points.
+   records for a given domain from multiple perspectives.
 
    This method has the following specific fields.
 
@@ -186,6 +206,11 @@ Table of Contents
     "caa": {
      "domain": "example.com",
      "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
+    },
+    "perspectives": {
+     "jfk": {"success": true},
+     "fra":  {"success": true},
+     "lis": {"success": true}
     }
    }
 
@@ -199,62 +224,70 @@ Table of Contents
 
 {
  "success": false,
- "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
+  "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": false}
+ },
+ "error": "LIS saw record 'xyz' on example.com which was not present from perspective LIS"
 }
 
    [[ TODO How much information to return on error to help debug, and
    how structured should it be?  I'd say it's good to be helpful, but
    it's bad to be structured as it's less readable. ]]
 
-3.2.  http method
+3.2.  http-acme method
 
-   A http requests the MPIC server to perform ACME HTTP challenge
+   http-acme requests the MPIC server to perform ACME http-01 challenge
    validation [RFC8555] for the domain's HTTP server from each
-   distributed vantage point.
+   distributed perspectives.
 
-   Performs a GET from multiple vantage points, and checks whether the
+   Performs a GET from multiple perspectives, and checks whether the
    body matches expectation.  Optionally, it allows performing an
    additional CAA record lookup for the domain.
 
    The request JSON object has the following specific fields.
 
-   *  domain (required, string): The domain name being verified.
+   *  domain_or_ip (required, string): The domain name or IP address
+      being verified.
 
-   *  path (required, string): The path at which the ACME HTTP challenge
-      resource is provisioned.
+   *  token (required, string): The token value defined in [RFC8555]
+      Section 8.3.
 
-   *  expected (required, string): Expected body of the response [[ TODO
-      what if it's not UTF-8? ]]
+   *  key_authorization (required, string): The Key Authorization
+      defined in [RFC8555] Section 8.1.
 
-   *  caa-check (optional, boolean): Performs CAA validation at the same
-      time for the domain as described above.  Defaults to true.
+   *  caa_check (optional, boolean): Performs CAA validation at the same
+      time for the domain as described above.  Defaults to true unless
+      domain_or_ip is an IP address.
 
-   POST /staging/mpic/draft-00
-   Host: mpc.example.com
-   Content-Type: application/json
+POST /staging/mpic/draft-00
+Host: mpc.example.com
+Content-Type: application/json
 
-   {
-    "method": "http",
-    "domain": "some.example.com",
-    "path": ".well-known/acme-challenge/token",
-    "expected": "challenge_token",
-    "caa-check": false,
-   }
+{
+ "method": "http-acme",
+ "domain_or_ip": "some.example.com",
+ "token": "base64_url_token",
+ "key_authorization": "base64_url_token.base64url_Thumbprint_accountKey"
+ "caa_check": false,
+}
 
    The MPIC server constructs a URL by populating the URL template
-   [RFC6570], http://{domain}/{path}, and verifies that the resulting
-   URL is well-formed, before making a HTTP GET request to the URL from
-   each vantage point.  Each vantage point SHOULD follow redirects when
-   dereferencing the URL.  The MPIC server verifies that expected value
-   provided by the client matches with the body of the response received
-   from each vantage point.
+   [RFC6570], http://{domain_or_ip}/.well-known/acme-challenge/{token},
+   and verifies that the resulting URL is well-formed, before making a
+   HTTP GET request to the URL from each vantage point.  Each
+   perspective SHOULD follow redirects when dereferencing the URL.  The
+   MPIC server verifies that the key_authorization value provided by the
+   client matches with the body of the response received from each
+   perspective.
 
    If the above verifications succeeds, then the validation is
    successful.  If the request fails, or the body does not pass these
    checks, then it has failed.
 
    Along side, the MPIC server queries for the CAA records for the
-   domain if the caa-check request parameter is set to "true".
+   domain_or_ip if the caa_check request parameter is set to "true".
 
    If either HTTP or CAA validation (when requested) fail, the response
    objects contains a top-level success field set to false, and contains
@@ -262,6 +295,13 @@ Table of Contents
 
    If both succeed, the response object contains a top-level success
    field set to true.
+
+   The response also contains an object (located under the key
+   perspectives) with keys that uniquiely identify the perspectives used
+   in the reqest.  Each perspective is associated with an object that
+   contains success key pointing to a boolean value of true or false to
+   indicate whether validation was successful at that perspective or
+   not.
 
    If a CAA check was requested, the response object will contain a top
    level caa field as described in Section 3.1.
@@ -271,6 +311,11 @@ Table of Contents
 
    {
     "success": true,
+    "perspectives": {
+     "jfk": {"success": true},
+     "fra":  {"success": true},
+     "lis": {"success": true}
+    }
    }
 
    An example of a response for a succesful validation with caa-check
@@ -278,22 +323,39 @@ Table of Contents
 
    {
     "success": true,
+    "perspectives": {
+     "jfk": {"success": true},
+     "fra":  {"success": true},
+     "lis": {"success": true}
+    }
     "caa": {
       "domain": "example.com",
       "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
     }
    }
 
-   An example of a response where the validation failed with caa-check
+   An example of a response where the validation failed with caa_check
    set to true, and the caa method being successful.
 
    {
     "success": false,
-    "error": "HTTP found unexpected value at LIS vantage point",
+    "perspectives": {
+     "jfk": {"success": true},
+     "fra":  {"success": true},
+     "lis": {"success": false}
+    }
+    "error": "HTTP found unexpected value at LIS perspective",
    }
 
-   Similarly example of a response where caa-check set to true, and both
+   Similarly example of a response where caa_check set to true, and both
    methods fail.
+
+   { "success": false, "perspectives": { "jfk": {"success": false},
+   "fra": {"success": true}, "lis": {"success": false} } "caa": {
+   "domain": "example.com", "records":
+   ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="] } "error": "HTTP found
+   unexpected value at LIS perspective.  CAA check failed at the JFK
+   perspective.", }
 
 3.3.  dns method
 

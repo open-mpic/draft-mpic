@@ -1166,7 +1166,7 @@ the Web PKI. This API allows CAs to use external MPIC infrastructure.<a href="#s
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-caa-validation-method" class="internal xref"><code>caa</code> validation method</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-http-method" class="internal xref"><code>http</code> method</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-http-acme-method" class="internal xref"><code>http-acme</code> method</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-dns-method" class="internal xref"><code>dns</code> method</a></p>
@@ -1232,7 +1232,7 @@ but not limited to via HTTP, DNS, and ALPN.<a href="#section-1.1-1" class="pilcr
 <p id="section-1.2-1">Several, but not all, CAs use the specific DCV methods of ACME <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>.
 Domain control validation is vulnerable to DNS and BGP hijacks.
 These can be partially mitigated by performing DCV from multiple
-vantage points, which is dubbed "multiple perspective issuance corroboration" (MPIC).
+network perspectives, which is dubbed "multiple perspective issuance corroboration" (MPIC).
 corroboration (MPIC) for domain control validation.
 Ballot SC-67 v3 of CA/B forum requires MPIC to be performed
 by all certification authorities (CAs) in the future.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
@@ -1271,25 +1271,28 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       </h2>
 <p id="section-3-1">The MPIC API implements a system for domain validation and CAA record checking
 using multiple perspectives across different regions.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">A MPIC service is identified by a HTTPS url.
-As a running example, say <code>https://mpc.example.com/staging</code>.<a href="#section-3-2" class="pilcrow">¶</a></p>
-<p id="section-3-3">A client requests a MPIC validation from the service
+<p id="section-3-2">An MPIC service can accept JSON requests over an arbitrary communication channel with an MPIC client. The MPIC service then produces MPIC responses which are sent back to the MPIC client over the communication channel. The communication channel may be synchronous (i.e., stall open on each MPIC request until an MPIC response is generated) or asynchronous (i.e., send a message to the MPIC service, close, and then receive a future message from the MPIC service containing a corresponding MPIC response). The MPIC service protocol does not provide any form of matching between MPIC requests and MPIC responses. A communication channel is responsible for ensuring that a client can match requests with corresponding responses.
+The communication channel <span class="bcp14">MUST</span> provide confidentiality and integrity as well as support for authentication of the MPIC service.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">This document describes communication with an MPIC service using HTTPS POST as the communication channel. Alternate communication channels include gRPC, Apache Kafka, RabbitMQ, etc...<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-4">A MPIC service running over the HTTPS POST communication channel is identified by a HTTPS url.
+As a running example, say <code>https://mpc.example.com/staging</code>.<a href="#section-3-4" class="pilcrow">¶</a></p>
+<p id="section-3-5">A client requests a MPIC validation from the service
 by sending a POST request to the resource <code>/mpic/draft-00</code>
 below the service URL.
-In the running example <code>https://mpc.example.com/staging/mpic/draft-00</code>.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4">[[ The final version of the API will use <code>/mpic/v1</code>. Incompatible
-   versions of the draft will bump the <code>-00</code>. ]]<a href="#section-3-4" class="pilcrow">¶</a></p>
-<p id="section-3-5">The body of the HTTP POST is a JSON object that describs the MPIC request.
-The service will respond with a JSON object containing MPIC results.<a href="#section-3-5" class="pilcrow">¶</a></p>
-<p id="section-3-6">There are three different MPIC validation methods, described below. The request
-object has a <code>method</code> field that allows to distinguish between each.<a href="#section-3-6" class="pilcrow">¶</a></p>
+In the running example <code>https://mpc.example.com/staging/mpic/draft-00</code>.<a href="#section-3-5" class="pilcrow">¶</a></p>
+<p id="section-3-6">[[ The final version of the API will use <code>/mpic/v1</code>. Incompatible
+   versions of the draft will bump the <code>-00</code>. ]]<a href="#section-3-6" class="pilcrow">¶</a></p>
+<p id="section-3-7">The body of the HTTP POST is a JSON object that describs the MPIC request.
+The service will respond with a JSON object containing MPIC results.<a href="#section-3-7" class="pilcrow">¶</a></p>
+<p id="section-3-8">There are three different MPIC validation methods, described below. The request
+object has a <code>method</code> field that allows to distinguish between each.<a href="#section-3-8" class="pilcrow">¶</a></p>
 <div id="caa-api">
 <section id="section-3.1">
         <h3 id="name-caa-validation-method">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-caa-validation-method" class="section-name selfRef"><code>caa</code> validation method</a>
         </h3>
 <p id="section-3.1-1">A <code>caa</code> requests asks the MPIC service to retrieve the relevant CAA DNS
-records for a given domain from multiple vantage points.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+records for a given domain from multiple perspectives.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">This method has the following specific fields.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1-3.1">
@@ -1329,6 +1332,11 @@ a parent domain of the requested <code>domain</code>.<a href="#section-3.1-7.1.1
  "caa": {
   "domain": "example.com",
   "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
+ },
+ "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": true}
  }
 }
 </pre><a href="#section-3.1-9" class="pilcrow">¶</a>
@@ -1342,7 +1350,12 @@ and an <code>error</code> field describing the error.<a href="#section-3.1-10" c
 <pre>
 {
  "success": false,
- "error": "LIS saw record 'xyz' on example.com which was not present from vantage point LIS"
+  "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": false}
+ },
+ "error": "LIS saw record 'xyz' on example.com which was not present from perspective LIS"
 }
 </pre><a href="#section-3.1-13" class="pilcrow">¶</a>
 </div>
@@ -1351,29 +1364,29 @@ and an <code>error</code> field describing the error.<a href="#section-3.1-10" c
    to be structured as it's less readable. ]]<a href="#section-3.1-14" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="http-method">
+<div id="http-acme-method">
 <section id="section-3.2">
-        <h3 id="name-http-method">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-http-method" class="section-name selfRef"><code>http</code> method</a>
+        <h3 id="name-http-acme-method">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-http-acme-method" class="section-name selfRef"><code>http-acme</code> method</a>
         </h3>
-<p id="section-3.2-1">A <code>http</code> requests the MPIC server to perform ACME HTTP challenge validation
-<span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> for the domain's HTTP server from each distributed vantage point.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">Performs a GET from multiple vantage points, and checks whether the body matches
+<p id="section-3.2-1"><code>http-acme</code> requests the MPIC server to perform ACME http-01 challenge validation
+<span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> for the domain's HTTP server from each distributed perspectives.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">Performs a GET from multiple perspectives, and checks whether the body matches
 expectation. Optionally, it allows performing an additional CAA record lookup
 for the domain.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">The request JSON object has the following specific fields.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-4.1">
-            <p id="section-3.2-4.1.1"><code>domain</code> (required, string): The domain name being verified.<a href="#section-3.2-4.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-4.1.1"><code>domain_or_ip</code> (required, string): The domain name or IP address being verified.<a href="#section-3.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-4.2">
-            <p id="section-3.2-4.2.1"><code>path</code> (required, string): The path at which the ACME HTTP challenge resource is provisioned.<a href="#section-3.2-4.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-4.2.1"><code>token</code> (required, string): The token value defined in <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>  Section 8.3.<a href="#section-3.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-4.3">
-            <p id="section-3.2-4.3.1"><code>expected</code> (required, string): Expected body of the response [[ TODO what if it's not UTF-8? ]]<a href="#section-3.2-4.3.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-4.3.1"><code>key_authorization</code> (required, string): The Key Authorization defined in <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>  Section 8.1.<a href="#section-3.2-4.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-4.4">
-            <p id="section-3.2-4.4.1"><code>caa-check</code> (optional, boolean): Performs CAA validation at the same time for the domain as described above. Defaults to true.<a href="#section-3.2-4.4.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-4.4.1"><code>caa_check</code> (optional, boolean): Performs CAA validation at the same time for the domain as described above. Defaults to true unless <code>domain_or_ip</code> is an IP address.<a href="#section-3.2-4.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <div class="alignLeft art-text artwork" id="section-3.2-5">
@@ -1383,65 +1396,95 @@ Host: mpc.example.com
 Content-Type: application/json
 
 {
- "method": "http",
- "domain": "some.example.com",
- "path": ".well-known/acme-challenge/token",
- "expected": "challenge_token",
- "caa-check": false,
+ "method": "http-acme",
+ "domain_or_ip": "some.example.com",
+ "token": "base64_url_token",
+ "key_authorization": "base64_url_token.base64url_Thumbprint_accountKey"
+ "caa_check": false,
 }
 </pre><a href="#section-3.2-5" class="pilcrow">¶</a>
 </div>
 <p id="section-3.2-6">The MPIC server constructs a URL by populating the URL template
-<span>[<a href="#RFC6570" class="cite xref">RFC6570</a>]</span>, <code>http://{domain}/{path}</code>, and verifies that the resulting URL is
+<span>[<a href="#RFC6570" class="cite xref">RFC6570</a>]</span>, <code>http://{domain_or_ip}/.well-known/acme-challenge/{token}</code>, and verifies that the resulting URL is
 well-formed, before making a HTTP GET request to the URL from each vantage
-point. Each vantage point <span class="bcp14">SHOULD</span> follow redirects when dereferencing the URL.
-The MPIC server verifies that <code>expected</code> value provided by the client matches
-with the body of the response received from each vantage point.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+point. Each perspective <span class="bcp14">SHOULD</span> follow redirects when dereferencing the URL.
+The MPIC server verifies that the <code>key_authorization</code> value provided by the client matches
+with the body of the response received from each perspective.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 <p id="section-3.2-7">If the above verifications succeeds, then the validation is successful. If
 the request fails, or the body does not pass these checks, then it has failed.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
 <p id="section-3.2-8">Along side, the MPIC server queries for the CAA records for the
-<code>domain</code> if the <code>caa-check</code> request parameter is set to "true".<a href="#section-3.2-8" class="pilcrow">¶</a></p>
+<code>domain_or_ip</code> if the <code>caa_check</code> request parameter is set to "true".<a href="#section-3.2-8" class="pilcrow">¶</a></p>
 <p id="section-3.2-9">If either HTTP or CAA validation (when requested) fail,
 the response objects contains a top-level
 <code>success</code> field set to <code>false</code>, and contains an <code>error</code> field
 that describes the error.<a href="#section-3.2-9" class="pilcrow">¶</a></p>
 <p id="section-3.2-10">If both succeed, the response object contains a top-level <code>success</code> field set to <code>true</code>.<a href="#section-3.2-10" class="pilcrow">¶</a></p>
-<p id="section-3.2-11">If a CAA check was requested, the response object will contain a top
-level <code>caa</code> field as described in <a href="#caa-api" class="auto internal xref">Section 3.1</a>.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
-<p id="section-3.2-12">An example of a response for a succesful validation with <code>caa-check</code> set to
-false.<a href="#section-3.2-12" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-13">
+<p id="section-3.2-11">The response also contains an object (located under the key <code>perspectives</code>) with keys that uniquiely identify the perspectives used in the reqest.
+Each perspective is associated with an object that contains <code>success</code> key pointing to a boolean value of <code>true</code> or <code>false</code> to indicate whether validation was successful at that perspective or not.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
+<p id="section-3.2-12">If a CAA check was requested, the response object will contain a top
+level <code>caa</code> field as described in <a href="#caa-api" class="auto internal xref">Section 3.1</a>.<a href="#section-3.2-12" class="pilcrow">¶</a></p>
+<p id="section-3.2-13">An example of a response for a succesful validation with <code>caa-check</code> set to
+false.<a href="#section-3.2-13" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-14">
 <pre>
 {
  "success": true,
+ "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": true}
+ }
 }
-</pre><a href="#section-3.2-13" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-14" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-14">An example of a response for a succesful validation with <code>caa-check</code> set to
-true.<a href="#section-3.2-14" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-15">
+<p id="section-3.2-15">An example of a response for a succesful validation with <code>caa-check</code> set to
+true.<a href="#section-3.2-15" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-16">
 <pre>
 {
  "success": true,
+ "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": true}
+ }
  "caa": {
    "domain": "example.com",
    "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
  }
 }
-</pre><a href="#section-3.2-15" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-16" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-16">An example of a response where the validation failed with caa-check set
-to true, and the <code>caa</code> method being successful.<a href="#section-3.2-16" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-17">
+<p id="section-3.2-17">An example of a response where the validation failed with caa_check set
+to true, and the <code>caa</code> method being successful.<a href="#section-3.2-17" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-18">
 <pre>
 {
  "success": false,
- "error": "HTTP found unexpected value at LIS vantage point",
+ "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": false}
+ }
+ "error": "HTTP found unexpected value at LIS perspective",
 }
-</pre><a href="#section-3.2-17" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-18" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-18">Similarly example of a response where caa-check set to true, and both
-methods fail.<a href="#section-3.2-18" class="pilcrow">¶</a></p>
+<p id="section-3.2-19">Similarly example of a response where caa_check set to true, and both
+methods fail.<a href="#section-3.2-19" class="pilcrow">¶</a></p>
+<p id="section-3.2-20">{
+ "success": false,
+ "perspectives": {
+  "jfk": {"success": false},
+  "fra":  {"success": true},
+  "lis": {"success": false}
+ }
+ "caa": {
+   "domain": "example.com",
+   "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
+ }
+ "error": "HTTP found unexpected value at LIS perspective. CAA check failed at the JFK perspective.",
+}<a href="#section-3.2-20" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="dns-method">
