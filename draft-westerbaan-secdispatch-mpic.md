@@ -149,6 +149,11 @@ An example of a response for a succesful validation.
  "caa": {
   "domain": "example.com",
   "records": ["AAVpc3N1ZWxldHNlbmNyeXB0Lm9yZw=="]
+ },
+ "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": true}
  }
 }
 ~~~
@@ -164,6 +169,11 @@ An example of a response for an unsuccesful validation.
 ~~~
 {
  "success": false,
+  "perspectives": {
+  "jfk": {"success": true},
+  "fra":  {"success": true},
+  "lis": {"success": false}
+ },
  "error": "LIS saw record 'xyz' on example.com which was not present from perspective LIS"
 }
 ~~~
@@ -222,7 +232,7 @@ that describes the error.
 
 If both succeed, the response object contains a top-level `success` field set to `true`.
 
-The response also contains an object (located under the key `perspectives`) with keys that uniquiely identify the perspectives used in the reqest. 
+The response also contains an object (located under the key `perspectives`) with keys that uniquiely identify the perspectives used in the reqest.
 Each perspective is associated with an object that contains `success` key pointing to a boolean value of `true` or `false` to indicate whether validation was successful at that perspective or not.
 
 If a CAA check was requested, the response object will contain a top
