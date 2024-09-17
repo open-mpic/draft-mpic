@@ -88,7 +88,12 @@ in case its primary fails.
 The MPIC API implements a system for domain validation and CAA record checking
 using multiple perspectives across different regions.
 
-A MPIC service is identified by a HTTPS url.
+An MPIC service can accept JSON requests over an arbitrary communication channel with an MPIC client. The MPIC service then produces MPIC responses which are sent back to the MPIC client over the communication channel. The communication channel may be synchronous (i.e., stall open on each MPIC request until an MPIC response is generated) or asynchronous (i.e., send a message to the MPIC service, close, and then receive a future message from the MPIC service containing a corresponding MPIC response). The MPIC service protocol does not provide any form of matching between MPIC requests and MPIC responses. A communication channel is responsible for ensuring that a client can match requests with corresponding responses.
+The communication channel MUST provide confidentiality and integrity as well as support for authentication of the MPIC service.
+
+This document describes communication with an MPIC service using HTTPS POST as the communication channel. Alternate communication channels include gRPC, Apache Kafka, RabbitMQ, etc...
+
+A MPIC service running over the HTTPS POST communication channel is identified by a HTTPS url.
 As a running example, say `https://mpc.example.com/staging`.
 
 A client requests a MPIC validation from the service
