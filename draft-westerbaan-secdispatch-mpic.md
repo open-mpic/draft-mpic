@@ -31,6 +31,10 @@ author:
     fullname: "Bas Westerbaan"
     organization: Cloudflare
     email: "bas@cloudflare.com"
+ -
+    fullname: "Henry Birge-Lee"
+    organization: Princeton University
+    email: "birgelee@princeton.edu"
 normative:
  RFC8555:
 
