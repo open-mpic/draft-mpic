@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-15T01:34:30.333313+00:00",
+  "timestamp": "2024-09-17T01:06:56.027029+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -921,7 +921,7 @@
       "labels": [],
       "body": "> I think the DNSSEC chain (or lack there of) should also be returned. This provides some non-reputability of the CAA records, as well as allowing a CA to see if some vantage points see DNSSEC signatures where others don't - possibly a sign of meddling.\r\n\r\nWas brought up by @TheEnbyperor. Although an interesting idea for better transparency and non-repudiation, in the current state of the world, DNS resolvers do not return DNSSEC authentication chains back to the clients (for practical reasons). The validation is done by the resolver, and the client _trusts_ the process.\r\n\r\nWe can recommend in the draft that for CAA checks, perspectives should prefer use of DNSSEC validating resolvers. By setting the DO bit, we can receive the RRSIG record for CAA of the domain, and the AD bit gives indication that the resolver performed the validation.\r\n\r\nThe question then boils down to, should each perspective return the base64 encoded RRSIG record as well in the response for the CAA check? Would that help provide value for non-reputability?",
       "createdAt": "2024-09-06T20:47:03Z",
-      "updatedAt": "2024-09-11T12:07:04Z",
+      "updatedAt": "2024-09-16T10:52:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -937,8 +937,63 @@
           "body": "We should take a step back and first consider the question: is there any benefit to check DNSSEC *from multiple perspectives*. It is clear that checking DNSSEC has a clear benefit from a single perspective, but does that benefit increase by checking it from multiple perspectives? I would say it does not.\r\n\r\nNonetheless it's good to mandate checking DNSSEC from each perspective as it's cheap.\r\n\r\nHowever, serialising and returning the full chain requires a significant amount of work in standardisation and implementation.\r\n\r\nThere is value in a CA having to log the DNSSEC chain from its own validation, but to me that is out of scope for an initial draft. We could well add it to MPIC at a later stage as a convenience, but it should not block progress.",
           "createdAt": "2024-09-11T12:07:03Z",
           "updatedAt": "2024-09-11T12:07:03Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "For context, here is [CA/B discussion](https://github.com/cabforum/servercert/issues/459) on adding validation method to certificates.",
+          "createdAt": "2024-09-16T10:52:51Z",
+          "updatedAt": "2024-09-16T10:52:51Z"
         }
       ]
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOMYks0s6WyEtb",
+      "title": "Domain or IP",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/17",
+      "state": "OPEN",
+      "author": "birgelee",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/open-mpic/draft-mpic/blob/42ee5bf17254cf81efa879cfee2bd1b51fa8c718/draft-westerbaan-secdispatch-mpic.md?plain=1#L110\r\n\r\nThe draft currently uses the label `domain` to refer to the domain being validated. ACME and the BRs also support certs for IP addresses. Open MPIC currently refers to this as `domain_or_ip_target`.\r\n\r\nDo we want to change the language to allow this identifier to be an IP address or a domain? How should IP address targets be handled in the future?",
+      "createdAt": "2024-09-17T00:14:07Z",
+      "updatedAt": "2024-09-17T00:14:08Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 18,
+      "id": "I_kwDOMYks0s6WyFC2",
+      "title": "Perspective response",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/18",
+      "state": "OPEN",
+      "author": "birgelee",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/open-mpic/draft-mpic/blob/42ee5bf17254cf81efa879cfee2bd1b51fa8c718/draft-westerbaan-secdispatch-mpic.md?plain=1#L141\r\n\r\nGiven the discussion in the logging issue, I think putting a response from each perspective in the API response is essential. Additionally, documentation on the perspectives used and their corresponding geographic regions would be good.",
+      "createdAt": "2024-09-17T00:15:49Z",
+      "updatedAt": "2024-09-17T00:15:50Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 19,
+      "id": "I_kwDOMYks0s6WyFgn",
+      "title": "ACME-specific methods",
+      "url": "https://github.com/open-mpic/draft-mpic/issues/19",
+      "state": "OPEN",
+      "author": "birgelee",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "https://github.com/open-mpic/draft-mpic/blob/42ee5bf17254cf81efa879cfee2bd1b51fa8c718/draft-westerbaan-secdispatch-mpic.md?plain=1#L187\r\n\r\nUpon reviewing the BRs and the ACME RFC, I plan to rework the open mpic API to separate agreed website change v2 and ACME agreed website change as separate methods. I know this came up previously and I sided on keeping them as a single method, but I have changed my mind a bit upon more review of the RFC and BRs. I will put a more detailed discussion in the Open MPIC repo when I make a PR for the change. Just a heads up.",
+      "createdAt": "2024-09-17T00:18:12Z",
+      "updatedAt": "2024-09-17T00:18:12Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": []
