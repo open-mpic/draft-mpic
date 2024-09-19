@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-17T01:06:56.027029+00:00",
+  "timestamp": "2024-09-19T01:21:23.483864+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -959,9 +959,38 @@
       "labels": [],
       "body": "https://github.com/open-mpic/draft-mpic/blob/42ee5bf17254cf81efa879cfee2bd1b51fa8c718/draft-westerbaan-secdispatch-mpic.md?plain=1#L110\r\n\r\nThe draft currently uses the label `domain` to refer to the domain being validated. ACME and the BRs also support certs for IP addresses. Open MPIC currently refers to this as `domain_or_ip_target`.\r\n\r\nDo we want to change the language to allow this identifier to be an IP address or a domain? How should IP address targets be handled in the future?",
       "createdAt": "2024-09-17T00:14:07Z",
-      "updatedAt": "2024-09-17T00:14:08Z",
+      "updatedAt": "2024-09-17T21:34:23Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How is a CAA check performed for an IP address?",
+          "createdAt": "2024-09-17T12:53:28Z",
+          "updatedAt": "2024-09-17T12:53:39Z"
+        },
+        {
+          "author": "gcimaszewski",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bwesterb In the BRs, it looks like CAA checking only applies to fully-qualified domain names, and thus there is no CAA check for IPs. \r\nThe API would also need some more changes to support IP validation, like a PTR lookup for DNS-based validation. ",
+          "createdAt": "2024-09-17T19:04:39Z",
+          "updatedAt": "2024-09-17T19:04:39Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The [BR document](https://github.com/cabforum/servercert/blob/main/docs/BR.md) states: `As part of the Certificate issuance process, the CA MUST retrieve and process CAA records in accordance with RFC 8659 for each **dNSName** in the subjectAltName extension`\r\n\r\nSo it seems validation of only domain name entries on the SAN is required when validated CAA records. Not sure if CAA records for IP addresses are a thing. There is an [expired draft in LAMPS working group](https://www.ietf.org/archive/id/draft-chariton-ipcaa-00.html) at IETF for this line of work but it seems to be abandoned.",
+          "createdAt": "2024-09-17T21:26:25Z",
+          "updatedAt": "2024-09-17T21:27:45Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, I was on a stale page so @gcimaszewski comment just got visible. With that context, I believe this issue is about supporting IP address control validation on the API, IIUC. The first comment on this issue references the CAA check description, hence the confusion.\r\n\r\nThe HTTP validation method in the draft can be generalized for both domain and IP address in that case.",
+          "createdAt": "2024-09-17T21:33:51Z",
+          "updatedAt": "2024-09-17T21:34:23Z"
+        }
+      ]
     },
     {
       "number": 18,
@@ -991,9 +1020,31 @@
       "labels": [],
       "body": "https://github.com/open-mpic/draft-mpic/blob/42ee5bf17254cf81efa879cfee2bd1b51fa8c718/draft-westerbaan-secdispatch-mpic.md?plain=1#L187\r\n\r\nUpon reviewing the BRs and the ACME RFC, I plan to rework the open mpic API to separate agreed website change v2 and ACME agreed website change as separate methods. I know this came up previously and I sided on keeping them as a single method, but I have changed my mind a bit upon more review of the RFC and BRs. I will put a more detailed discussion in the Open MPIC repo when I make a PR for the change. Just a heads up.",
       "createdAt": "2024-09-17T00:18:12Z",
-      "updatedAt": "2024-09-17T00:18:12Z",
+      "updatedAt": "2024-09-18T09:43:19Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What is the reasoning for the change of heart?",
+          "createdAt": "2024-09-17T12:49:55Z",
+          "updatedAt": "2024-09-17T12:49:55Z"
+        },
+        {
+          "author": "birgelee",
+          "authorAssociation": "MEMBER",
+          "body": "I put in some discussion in the aws-paython-lambda repo:\r\nhttps://github.com/open-mpic/aws-lambda-python/issues/13#issue-2531872132\r\n\r\nEssentially the standard seems to clearly identify these as two separate methods that actually have fairly significant differences in how to properly execute validation. It is not clear to me upon further review of the standards that a single back end engine could appropriately handle both methods without it simply being two methods under the hood masquerading as a single method. I know this is somewhat contrary to recommendations I made earlier but I had not realized the extent to which these two methods contradicted.",
+          "createdAt": "2024-09-17T19:03:44Z",
+          "updatedAt": "2024-09-17T19:03:44Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Maybe I'm missing something, but we could still use a single method if the API returns the quorum value of the file, and only accesses on HTTP?",
+          "createdAt": "2024-09-18T09:43:18Z",
+          "updatedAt": "2024-09-18T09:43:18Z"
+        }
+      ]
     }
   ],
   "pulls": []
