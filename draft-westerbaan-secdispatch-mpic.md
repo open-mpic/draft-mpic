@@ -45,10 +45,7 @@ informative:
 
 --- abstract
 
-This memo defines an API for a service to offer multi-perspective issuance
-corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
-forum requires MPIC to be performed by all certification authorities (CAs) in
-the Web PKI. This API allows CAs to use external MPIC infrastructure.
+This memo standardizes an API for Multi-Perspective Issuance Corroboration (MPIC) services to facilitate domain control validation (DCV) from multiple network perspectives. MPIC enhances the security of certificate issuance by mitigating the risk of localized, equally-specific BGP hijacking attacks that can undermine traditional DCV methods permitted by the CA/Browser Forum Baseline Requirements for TLS Server Certificates. This API enables Certification Authorities (CAs) to integrate with external MPIC providers, promoting a more robust and resilient Web PKI ecosystem. The API design prioritizes flexibility, scalability, and interoperability, allowing for diverse implementations and deployment models. This standardization effort is driven by the need to reliably address vulnerabilities in the domain validation process highlighted by recent research and real-world attacks, as reflected in Ballot SC-067 V3 of the CA/Browser Forum's Server Certificate Working Group.
 
 --- middle
 
