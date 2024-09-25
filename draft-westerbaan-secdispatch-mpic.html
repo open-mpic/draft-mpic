@@ -9,24 +9,21 @@
 <meta content="Bas Westerbaan" name="author">
 <meta content="Henry Birge-Lee" name="author">
 <meta content="
-       This memo defines an API for a service to offer multi-perspective issuance
-corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
-forum requires MPIC to be performed by all certification authorities (CAs) in
-the Web PKI. This API allows CAs to use external MPIC infrastructure. 
+       This memo defines an API for Multi-Perspective Issuance Corroboration (MPIC) services to facilitate domain control validation (DCV) from multiple network perspectives. MPIC enhances the security of publicly-trusted certificate issuance by mitigating the risk of localized, equally-specific BGP hijacking attacks that can undermine traditional DCV methods permitted by the CA/Browser Forum Baseline Requirements for TLS Server Certificates. This API enables Certification Authorities (CAs) to more reliably integrate with external MPIC providers, promoting a more robust and resilient Web PKI ecosystem. The API design prioritizes flexibility, scalability, and interoperability, allowing for diverse implementations and deployment models. This standardization effort is driven by the need to consistently address vulnerabilities in the domain validation process highlighted by recent research and real-world attacks, as reflected in Ballot SC-067 V3 of the CA/Browser Forum's Server Certificate Working Group. 
     " name="description">
-<meta content="xml2rfc 3.23.0" name="generator">
+<meta content="xml2rfc 3.23.1" name="generator">
 <meta content="dcv" name="keyword">
 <meta content="mpic" name="keyword">
 <meta content="draft-westerbaan-secdispatch-mpic-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.23.0
-    Python 3.12.3
+  xml2rfc 3.23.1
+    Python 3.12.6
     ConfigArgParse 1.7
-    google-i18n-address 3.1.0
+    google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 4.9.4
-    platformdirs 4.2.2
+    platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.32.3
@@ -1034,7 +1031,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ahmad, et al.</td>
-<td class="center">Expires 21 March 2025</td>
+<td class="center">Expires 29 March 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1047,12 +1044,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-westerbaan-secdispatch-mpic-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-17" class="published">17 September 2024</time>
+<time datetime="2024-09-25" class="published">25 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-03-21">21 March 2025</time></dd>
+<dd class="expires"><time datetime="2025-03-29">29 March 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1073,10 +1070,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Multi-Perspective Issuance Corroboration (MPIC) Service</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This memo defines an API for a service to offer multi-perspective issuance
-corroboration (MPIC) for domain control validation. Ballot SC-67 v3 of CA/B
-forum requires MPIC to be performed by all certification authorities (CAs) in
-the Web PKI. This API allows CAs to use external MPIC infrastructure.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This memo defines an API for Multi-Perspective Issuance Corroboration (MPIC) services to facilitate domain control validation (DCV) from multiple network perspectives. MPIC enhances the security of publicly-trusted certificate issuance by mitigating the risk of localized, equally-specific BGP hijacking attacks that can undermine traditional DCV methods permitted by the CA/Browser Forum Baseline Requirements for TLS Server Certificates. This API enables Certification Authorities (CAs) to more reliably integrate with external MPIC providers, promoting a more robust and resilient Web PKI ecosystem. The API design prioritizes flexibility, scalability, and interoperability, allowing for diverse implementations and deployment models. This standardization effort is driven by the need to consistently address vulnerabilities in the domain validation process highlighted by recent research and real-world attacks, as reflected in Ballot SC-067 V3 of the CA/Browser Forum's Server Certificate Working Group.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1113,7 +1107,7 @@ the Web PKI. This API allows CAs to use external MPIC infrastructure.<a href="#s
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">

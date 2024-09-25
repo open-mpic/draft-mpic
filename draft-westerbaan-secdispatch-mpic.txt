@@ -5,9 +5,9 @@
 Security Dispatch                                            S. S. Ahmad
 Internet-Draft                                             B. Westerbaan
 Intended status: Informational                                Cloudflare
-Expires: 21 March 2025                                      H. Birge-Lee
+Expires: 29 March 2025                                      H. Birge-Lee
                                                     Princeton University
-                                                       17 September 2024
+                                                       25 September 2024
 
 
         Multi-Perspective Issuance Corroboration (MPIC) Service
@@ -15,11 +15,22 @@ Expires: 21 March 2025                                      H. Birge-Lee
 
 Abstract
 
-   This memo defines an API for a service to offer multi-perspective
-   issuance corroboration (MPIC) for domain control validation.  Ballot
-   SC-67 v3 of CA/B forum requires MPIC to be performed by all
-   certification authorities (CAs) in the Web PKI.  This API allows CAs
-   to use external MPIC infrastructure.
+   This memo defines an API for Multi-Perspective Issuance Corroboration
+   (MPIC) services to facilitate domain control validation (DCV) from
+   multiple network perspectives.  MPIC enhances the security of
+   publicly-trusted certificate issuance by mitigating the risk of
+   localized, equally-specific BGP hijacking attacks that can undermine
+   traditional DCV methods permitted by the CA/Browser Forum Baseline
+   Requirements for TLS Server Certificates.  This API enables
+   Certification Authorities (CAs) to more reliably integrate with
+   external MPIC providers, promoting a more robust and resilient Web
+   PKI ecosystem.  The API design prioritizes flexibility, scalability,
+   and interoperability, allowing for diverse implementations and
+   deployment models.  This standardization effort is driven by the need
+   to consistently address vulnerabilities in the domain validation
+   process highlighted by recent research and real-world attacks, as
+   reflected in Ballot SC-067 V3 of the CA/Browser Forum's Server
+   Certificate Working Group.
 
 About This Document
 
@@ -53,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 March 2025.
+   This Internet-Draft will expire on 29 March 2025.
 
 Copyright Notice
 
