@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-24T01:23:32.197917+00:00",
+  "timestamp": "2024-09-26T01:22:47.431810+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -1047,5 +1047,108 @@
       ]
     }
   ],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 20,
+      "id": "PR_kwDOMYks0s58sYOd",
+      "title": "Update abstract",
+      "url": "https://github.com/open-mpic/draft-mpic/pull/20",
+      "state": "MERGED",
+      "author": "ryancdickson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Sorry for the slow start. Will spend time reviewing the existing content over the next few days, and will suggest updates via PR.\r\n\r\nNo hard feelings if suggestions are not accepted!",
+      "createdAt": "2024-09-25T18:02:32Z",
+      "updatedAt": "2024-09-25T21:39:44Z",
+      "baseRepository": "open-mpic/draft-mpic",
+      "baseRefName": "main",
+      "baseRefOid": "815afb0ce7d6629b70420a6f93e5caf7541ae38d",
+      "headRepository": "ryancdickson/draft-mpic",
+      "headRefName": "main",
+      "headRefOid": "a2a0c4db39a6d918703e933f066dd9522c73cbc7",
+      "closedAt": "2024-09-25T21:39:43Z",
+      "mergedAt": "2024-09-25T21:39:43Z",
+      "mergedBy": "bwesterb",
+      "mergeCommit": {
+        "oid": "5e253503848b11e0249bf03833134b588bff078f"
+      },
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks @ryancdickson.  I think this is an improvement for readers who want to understand the purpose that only read the abstract. @SulemanAhmadd to move things along, I propose we just merge and refine in later PRs if you want it terser.",
+          "createdAt": "2024-09-25T20:10:11Z",
+          "updatedAt": "2024-09-25T20:10:34Z"
+        },
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Happy to cater to them later. Suggestions are non-blockers!",
+          "createdAt": "2024-09-25T20:19:35Z",
+          "updatedAt": "2024-09-25T20:19:35Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMYks0s6K1HU9",
+          "commit": {
+            "abbreviatedOid": "a2a0c4d"
+          },
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Some minor suggestions to consider. Thanks for the PR! :)",
+          "createdAt": "2024-09-25T18:29:08Z",
+          "updatedAt": "2024-09-25T18:40:07Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "`MPIC enhances the security of publicly-trusted certificate issuance by mitigating the risk of localized, equally-specific BGP hijacking attacks that can undermine traditional DCV methods permitted by the CA/Browser Forum Baseline Requirements for TLS Server Certificates.`\r\n\r\nIn order to keep abstract precise and to the point, may be we should move this line to the introduction below instead?",
+              "createdAt": "2024-09-25T18:29:08Z",
+              "updatedAt": "2024-09-25T18:40:07Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "Consider dropping: `The API design prioritizes flexibility, scalability, and interoperability, allowing for diverse implementations and deployment models.`\r\n\r\nAgain, to keep abstract to the point.",
+              "createdAt": "2024-09-25T18:31:31Z",
+              "updatedAt": "2024-09-25T18:40:07Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "`This standardization effort is driven by the need...`, instead of that lets be more direct as this document relates to standardizing the API.\r\n\r\n`This document defines the API to perform MPIC as reflected in Ballot SC-067 V3...`",
+              "createdAt": "2024-09-25T18:37:34Z",
+              "updatedAt": "2024-09-25T18:40:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMYks0s6K2F1N",
+          "commit": {
+            "abbreviatedOid": "a2a0c4d"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-25T20:07:43Z",
+          "updatedAt": "2024-09-25T20:07:43Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMYks0s6K2P_J",
+          "commit": {
+            "abbreviatedOid": "a2a0c4d"
+          },
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-25T20:31:23Z",
+          "updatedAt": "2024-09-25T20:31:23Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
 }
