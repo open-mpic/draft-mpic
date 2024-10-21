@@ -5,13 +5,13 @@
 Security Dispatch                                            S. S. Ahmad
 Internet-Draft                                             B. Westerbaan
 Intended status: Informational                                Cloudflare
-Expires: 29 March 2025                                      H. Birge-Lee
+Expires: 24 April 2025                                      H. Birge-Lee
                                                     Princeton University
-                                                       25 September 2024
+                                                         21 October 2024
 
 
         Multi-Perspective Issuance Corroboration (MPIC) Service
-                draft-westerbaan-secdispatch-mpic-latest
+                draft-westerbaan-alldispatch-mpic-latest
 
 Abstract
 
@@ -37,14 +37,14 @@ About This Document
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at https://open-
-   mpic.github.io/draft-mpic/draft-westerbaan-secdispatch-mpic.html.
+   mpic.github.io/draft-mpic/draft-westerbaan-alldispatch-mpic.html.
    Status information for this document may be found at
-   https://datatracker.ietf.org/doc/draft-westerbaan-secdispatch-mpic/.
+   https://datatracker.ietf.org/doc/draft-westerbaan-alldispatch-mpic/.
 
-   Discussion of this document takes place on the Security Dispatch
-   Working Group mailing list (mailto:secdispatch@ietf.org), which is
-   archived at https://mailarchive.ietf.org/arch/browse/secdispatch/.
-   Subscribe at https://www.ietf.org/mailman/listinfo/secdispatch/.
+   Discussion of this document takes place on the All Dispatch Working
+   Group mailing list (mailto:alldispatch@ietf.org), which is archived
+   at https://mailarchive.ietf.org/arch/browse/alldispatch/.  Subscribe
+   at https://www.ietf.org/mailman/listinfo/alldispatch/.
 
    Source for this draft and an issue tracker can be found at
    https://github.com/open-mpic/draft-mpic.
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 March 2025.
+   This Internet-Draft will expire on 24 April 2025.
 
 Copyright Notice
 
