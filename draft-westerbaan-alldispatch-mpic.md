@@ -3,7 +3,7 @@ title: "Multi-Perspective Issuance Corroboration (MPIC) Service "
 abbrev: "MPIC"
 category: info
 
-docname: draft-westerbaan-secdispatch-mpic-latest
+docname: draft-westerbaan-alldispatch-mpic-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
@@ -15,12 +15,12 @@ keyword:
  - dcv
  - mpic
 venue:
-  group: "Security Dispatch"
+  group: "All Dispatch"
   type: "Working Group"
-  mail: "secdispatch@ietf.org"
-  arch: "https://mailarchive.ietf.org/arch/browse/secdispatch/"
+  mail: "alldispatch@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/alldispatch/"
   github: "open-mpic/draft-mpic"
-  latest: "https://open-mpic.github.io/draft-mpic/draft-westerbaan-secdispatch-mpic.html"
+  latest: "https://open-mpic.github.io/draft-mpic/draft-westerbaan-alldispatch-mpic.html"
 
 author:
  -
