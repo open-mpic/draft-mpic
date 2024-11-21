@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-19T01:35:59.742628+00:00",
+  "timestamp": "2024-11-21T01:27:04.042687+00:00",
   "repo": "open-mpic/draft-mpic",
   "labels": [
     {
@@ -740,16 +740,24 @@
       "id": "I_kwDOMYks0s6Tr9xg",
       "title": "Prepare slides for SECDISPATCH",
       "url": "https://github.com/open-mpic/draft-mpic/issues/12",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bwesterb",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-08-21T11:20:02Z",
-      "updatedAt": "2024-08-21T11:20:02Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-11-19T17:22:59Z",
+      "closedAt": "2024-11-19T17:22:59Z",
+      "comments": [
+        {
+          "author": "SulemanAhmadd",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We did not get a presentation slot for IETF 121. We plan to revisit around IETF 123.",
+          "createdAt": "2024-11-19T17:22:59Z",
+          "updatedAt": "2024-11-19T17:22:59Z"
+        }
+      ]
     },
     {
       "number": 13,
