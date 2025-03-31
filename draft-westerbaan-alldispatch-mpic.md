@@ -101,7 +101,7 @@ In the running example `https://mpc.example.com/staging/mpic/draft-00`.
 [[ The final version of the API will use `/mpic/v1`. Incompatible
    versions of the draft will bump the `-00`. ]]
 
-The body of the HTTP POST is a JSON object that describs the MPIC request.
+The body of the HTTP POST is a JSON object that describes the MPIC request.
 The service will respond with a JSON object containing MPIC results.
 
 There are three different MPIC validation methods, described below. The request
