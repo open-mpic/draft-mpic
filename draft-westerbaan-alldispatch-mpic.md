@@ -101,7 +101,7 @@ In the running example `https://mpc.example.com/staging/mpic/draft-00`.
 [[ The final version of the API will use `/mpic/v1`. Incompatible
    versions of the draft will bump the `-00`. ]]
 
-The body of the HTTP POST is a JSON object that describs the MPIC request.
+The body of the HTTP POST is a JSON object that describes the MPIC request.
 The service will respond with a JSON object containing MPIC results.
 
 There are three different MPIC validation methods, described below. The request
@@ -161,7 +161,7 @@ and an `error` field describing the error.
 [[ TODO do we to define the possible errors, or at least assign
         some codes? ]]
 
-An example of a response for an unsuccesful validation.
+An example of a response for an unsuccessful validation.
 
 ~~~
 {
@@ -229,7 +229,7 @@ that describes the error.
 
 If both succeed, the response object contains a top-level `success` field set to `true`.
 
-The response also contains an object (located under the key `perspectives`) with keys that uniquiely identify the perspectives used in the reqest.
+The response also contains an object (located under the key `perspectives`) with keys that uniquely identify the perspectives used in the request.
 Each perspective is associated with an object that contains `success` key pointing to a boolean value of `true` or `false` to indicate whether validation was successful at that perspective or not.
 
 If a CAA check was requested, the response object will contain a top
