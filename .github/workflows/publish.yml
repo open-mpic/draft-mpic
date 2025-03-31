@@ -13,6 +13,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read
     name: "Publish New Draft Version"
     runs-on: ubuntu-latest
     steps:
