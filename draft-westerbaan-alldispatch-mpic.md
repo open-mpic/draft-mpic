@@ -161,7 +161,7 @@ and an `error` field describing the error.
 [[ TODO do we to define the possible errors, or at least assign
         some codes? ]]
 
-An example of a response for an unsuccesful validation.
+An example of a response for an unsuccessful validation.
 
 ~~~
 {
